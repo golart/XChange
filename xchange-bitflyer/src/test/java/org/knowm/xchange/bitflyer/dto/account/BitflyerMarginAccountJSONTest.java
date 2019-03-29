@@ -11,6 +11,7 @@ import org.junit.Test;
 public class BitflyerMarginAccountJSONTest {
   @Test
   public void testUnmarshal() throws IOException {
+    
 
     // Read in the JSON from the example resources
     InputStream is =
