@@ -1,57 +1,52 @@
+// 
+// Decompiled by Procyon v0.5.36
+// 
+
 package org.knowm.xchange.binance.service;
 
 import java.util.Date;
+import org.knowm.xchange.dto.account.FundingRecord;
 import org.knowm.xchange.currency.Currency;
-import org.knowm.xchange.dto.account.FundingRecord.Type;
 import org.knowm.xchange.service.trade.params.HistoryParamsFundingType;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamCurrency;
 import org.knowm.xchange.service.trade.params.TradeHistoryParamsTimeSpan;
+import org.knowm.xchange.service.trade.params.TradeHistoryParamCurrency;
 
-public class BinanceFundingHistoryParams
-    implements TradeHistoryParamCurrency, TradeHistoryParamsTimeSpan, HistoryParamsFundingType {
-
-  private Currency currency;
-  private Type type;
-  private Date startTime;
-  private Date endTime;
-
-  @Override
-  public Currency getCurrency() {
-    return currency;
-  }
-
-  @Override
-  public void setCurrency(Currency currency) {
-    this.currency = currency;
-  }
-
-  @Override
-  public Type getType() {
-    return type;
-  }
-
-  @Override
-  public void setType(Type type) {
-    this.type = type;
-  }
-
-  @Override
-  public Date getStartTime() {
-    return startTime;
-  }
-
-  @Override
-  public void setStartTime(Date startTime) {
-    this.startTime = startTime;
-  }
-
-  @Override
-  public Date getEndTime() {
-    return endTime;
-  }
-
-  @Override
-  public void setEndTime(Date endTime) {
-    this.endTime = endTime;
-  }
+public class BinanceFundingHistoryParams implements TradeHistoryParamCurrency, TradeHistoryParamsTimeSpan, HistoryParamsFundingType
+{
+    private Currency currency;
+    private FundingRecord.Type type;
+    private Date startTime;
+    private Date endTime;
+    
+    public Currency getCurrency() {
+        return this.currency;
+    }
+    
+    public void setCurrency(final Currency currency) {
+        this.currency = currency;
+    }
+    
+    public FundingRecord.Type getType() {
+        return this.type;
+    }
+    
+    public void setType(final FundingRecord.Type type) {
+        this.type = type;
+    }
+    
+    public Date getStartTime() {
+        return this.startTime;
+    }
+    
+    public void setStartTime(final Date startTime) {
+        this.startTime = startTime;
+    }
+    
+    public Date getEndTime() {
+        return this.endTime;
+    }
+    
+    public void setEndTime(final Date endTime) {
+        this.endTime = endTime;
+    }
 }
