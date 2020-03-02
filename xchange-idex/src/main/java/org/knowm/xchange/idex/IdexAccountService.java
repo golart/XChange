@@ -71,19 +71,18 @@ public class IdexAccountService extends BaseExchangeService implements AccountSe
 
       ret =
           new AccountInfo(
-              new Wallet(
-                  s,
-                  returnBalancesPost
-                      .entrySet()
-                      .stream()
-                      .map(
-                          entry ->
-                              new Balance(
-                                  new Currency(entry.getKey()),
-                                  null,
-                                  entry.getValue().getAvailable(),
-                                  entry.getValue().getOnOrders()))
-                      .collect(Collectors.toList())));
+              Wallet.Builder.from(
+                      returnBalancesPost.entrySet().stream()
+                          .map(
+                              entry ->
+                                  new Balance(
+                                      new Currency(entry.getKey()),
+                                      null,
+                                      entry.getValue().getAvailable(),
+                                      entry.getValue().getOnOrders()))
+                          .collect(Collectors.toList()))
+                  .id(s)
+                  .build());
 
     } catch (Exception ignored) {
       ignored.printStackTrace();
@@ -117,9 +116,7 @@ public class IdexAccountService extends BaseExchangeService implements AccountSe
       ReturnDepositsWithdrawalsResponse returnDepositsWithdrawalsPost) {
 
     return Arrays.asList(
-            returnDepositsWithdrawalsPost
-                .getWithdrawals()
-                .stream()
+            returnDepositsWithdrawalsPost.getWithdrawals().stream()
                 .map(
                     fundingLedger ->
                         new FundingRecord(
@@ -135,9 +132,7 @@ public class IdexAccountService extends BaseExchangeService implements AccountSe
                             BigDecimal.ZERO,
                             ""))
                 .collect(Collectors.toList()),
-            returnDepositsWithdrawalsPost
-                .getDeposits()
-                .stream()
+            returnDepositsWithdrawalsPost.getDeposits().stream()
                 .map(
                     fundingLedger1 ->
                         new FundingRecord(

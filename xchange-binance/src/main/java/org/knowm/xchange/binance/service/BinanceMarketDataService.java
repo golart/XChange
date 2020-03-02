@@ -10,6 +10,7 @@ import org.knowm.xchange.binance.BinanceErrorAdapter;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.marketdata.BinanceAggTrades;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
+import org.knowm.xchange.binance.dto.marketdata.BinancePriceQuantity;
 import org.knowm.xchange.binance.dto.marketdata.BinanceTicker24h;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order.OrderType;
@@ -53,15 +54,11 @@ public class BinanceMarketDataService extends BinanceMarketDataServiceRaw
 
   public static OrderBook convertOrderBook(BinanceOrderbook ob, CurrencyPair pair) {
     List<LimitOrder> bids =
-        ob.bids
-            .entrySet()
-            .stream()
+        ob.bids.entrySet().stream()
             .map(e -> new LimitOrder(OrderType.BID, e.getValue(), pair, null, null, e.getKey()))
             .collect(Collectors.toList());
     List<LimitOrder> asks =
-        ob.asks
-            .entrySet()
-            .stream()
+        ob.asks.entrySet().stream()
             .map(e -> new LimitOrder(OrderType.ASK, e.getValue(), pair, null, null, e.getKey()))
             .collect(Collectors.toList());
     return new OrderBook(null, asks, bids);
@@ -107,8 +104,7 @@ public class BinanceMarketDataService extends BinanceMarketDataServiceRaw
       List<BinanceAggTrades> aggTrades =
           binance.aggTrades(BinanceAdapters.toSymbol(pair), fromId, startTime, endTime, limit);
       List<Trade> trades =
-          aggTrades
-              .stream()
+          aggTrades.stream()
               .map(
                   at ->
                       new Trade(
@@ -141,5 +137,10 @@ public class BinanceMarketDataService extends BinanceMarketDataServiceRaw
       throw new IllegalArgumentException(
           "Argument on index " + index + " is not a number: " + argStr, e);
     }
+  }
+
+  public List<Ticker> getAllBookTickers() throws IOException {
+    List<BinancePriceQuantity> binanceTickers = tickerAllBookTickers();
+    return BinanceAdapters.adaptPriceQuantities(binanceTickers);
   }
 }

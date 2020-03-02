@@ -66,7 +66,7 @@ public final class BTCMarketsAdapters {
       final Currency currency = Currency.getInstance(blc.getCurrency());
       wallets.add(new Balance(currency, blc.getBalance(), blc.getAvailable()));
     }
-    return new Wallet(wallets);
+    return Wallet.Builder.from(wallets).build();
   }
 
   public static OrderBook adaptOrderBook(
@@ -101,8 +101,7 @@ public final class BTCMarketsAdapters {
   public static LimitOrder adaptOrder(BTCMarketsOrder o) {
     BigDecimal averagePrice =
         BigDecimal.valueOf(
-            o.getTrades()
-                .stream()
+            o.getTrades().stream()
                 .mapToDouble(value -> value.getPrice().doubleValue())
                 .summaryStatistics()
                 .getAverage());

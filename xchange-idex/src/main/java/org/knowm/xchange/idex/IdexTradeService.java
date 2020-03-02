@@ -91,8 +91,7 @@ public class IdexTradeService extends BaseExchangeService implements TradeServic
 
       ret =
           new OpenOrders(
-              openOrdersResponse
-                  .stream()
+              openOrdersResponse.stream()
                   .map(
                       responseInner -> {
                         CurrencyPair currencyPair;
@@ -145,9 +144,7 @@ public class IdexTradeService extends BaseExchangeService implements TradeServic
     UserTrades ret = null;
     try {
       List<UserTrade> userTrades =
-          returnTradeHistoryApi
-              .tradeHistory((TradeHistoryReq) tradeHistoryParams)
-              .stream()
+          returnTradeHistoryApi.tradeHistory((TradeHistoryReq) tradeHistoryParams).stream()
               .map(
                   tradeHistoryItem ->
                       new UserTrade.Builder()
@@ -284,7 +281,7 @@ public class IdexTradeService extends BaseExchangeService implements TradeServic
 
       SignatureData sig =
           generateSignature(exchange.getExchangeSpecification().getSecretKey(), hash_data);
-      byte v = sig.getV();
+      byte[] v = sig.getV();
       byte[] r = sig.getR();
       byte[] s = sig.getS();
       orderReq =
@@ -298,7 +295,7 @@ public class IdexTradeService extends BaseExchangeService implements TradeServic
               .expires(expires)
               .r("0x" + new String(Hex.toHexString(r)))
               .s("0x" + new String(Hex.toHexString(s)))
-              .v(BigInteger.valueOf(v & 0xffl));
+              .v(BigInteger.valueOf(v[0] & 0xffl));
     }
     return orderReq;
   }

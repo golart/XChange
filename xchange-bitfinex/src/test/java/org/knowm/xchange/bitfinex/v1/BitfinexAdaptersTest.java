@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
+import org.knowm.xchange.bitfinex.service.BitfinexAdapters;
 import org.knowm.xchange.bitfinex.v1.dto.account.BitfinexBalancesResponse;
 import org.knowm.xchange.bitfinex.v1.dto.account.BitfinexDepositWithdrawalHistoryResponse;
 import org.knowm.xchange.bitfinex.v1.dto.account.BitfinexFeesJSONTest;
@@ -94,22 +95,19 @@ public class BitfinexAdaptersTest {
     List<Wallet> wallets = BitfinexAdapters.adaptWallets(response);
 
     Wallet exchangeWallet =
-        wallets
-            .stream()
+        wallets.stream()
             .filter(wallet -> "exchange".equals(wallet.getId()))
             .findFirst()
             .orElse(null);
     assertNotNull("Exchange wallet is missing", exchangeWallet);
     Wallet tradingWallet =
-        wallets
-            .stream()
+        wallets.stream()
             .filter(wallet -> "trading".equals(wallet.getId()))
             .findFirst()
             .orElse(null);
     assertNotNull("Trading wallet is missing", tradingWallet);
     Wallet depositWallet =
-        wallets
-            .stream()
+        wallets.stream()
             .filter(wallet -> "deposit".equals(wallet.getId()))
             .findFirst()
             .orElse(null);

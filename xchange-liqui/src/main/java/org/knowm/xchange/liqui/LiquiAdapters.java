@@ -222,13 +222,11 @@ public class LiquiAdapters {
   public static AccountInfo adaptAccountInfo(final LiquiAccountInfo info) {
     final Map<Currency, BigDecimal> funds = info.getFunds().getFunds();
     final List<Balance> balances =
-        funds
-            .entrySet()
-            .stream()
+        funds.entrySet().stream()
             .map(entry -> new Balance(entry.getKey(), entry.getValue()))
             .collect(Collectors.toList());
 
-    final Wallet wallet = new Wallet("Liqui wallet", balances);
+    final Wallet wallet = Wallet.Builder.from(balances).id("Liqui wallet").build();
 
     return new AccountInfo(wallet);
   }

@@ -2,12 +2,7 @@ package org.knowm.xchange.acx;
 
 import java.io.IOException;
 import java.util.List;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import org.knowm.xchange.acx.dto.AcxTrade;
 import org.knowm.xchange.acx.dto.account.AcxAccountInfo;
@@ -60,6 +55,28 @@ public interface AcxApi {
   List<AcxTrade> getTrades(@PathParam("market") String market) throws IOException;
 
   /**
+   * Get recent trades on market, each trade is included only once. Trades are sorted in reverse
+   * creation order.
+   *
+   * @param market Unique market id. It's always in the form of xxxyyy, where xxx is the base
+   *     currency code, yyy is the quote currency code, e.g. 'btcaud'. All available markets c an be
+   *     found at /api/v2/markets.
+   */
+  @GET
+  @Path("/trades/my.json")
+  List<AcxTrade> getMyTrades(
+      @QueryParam("access_key") String accessKey,
+      @QueryParam("tonce") long tonce,
+      @QueryParam("signature") ParamsDigest signature,
+      @QueryParam("market") String market,
+      @QueryParam("limit") String limit,
+      @QueryParam("order") String order,
+      @QueryParam("from") String from,
+      @QueryParam("to") String to,
+      @QueryParam("timestamp") String timestamp)
+      throws IOException;
+
+  /**
    * Get your profile and accounts info.
    *
    * @param accessKey Access key.
@@ -90,6 +107,23 @@ public interface AcxApi {
       @PathParam("access_key") String accessKey,
       @PathParam("tonce") long tonce,
       @PathParam("market") String market,
+      @PathParam("signature") ParamsDigest signature)
+      throws IOException;
+
+  /**
+   * Get your orders, results are paginated.
+   *
+   * @param accessKey Access key.
+   * @param tonce Tonce is an integer represents the milliseconds elapsed since Unix epoch.
+   * @param id Order id
+   * @param signature The signature of your request payload, generated using your secret key.
+   */
+  @GET
+  @Path("/order.json?access_key={access_key}&tonce={tonce}&id={id}&signature={signature}")
+  AcxOrder getOrder(
+      @PathParam("access_key") String accessKey,
+      @PathParam("tonce") long tonce,
+      @PathParam("id") long id,
       @PathParam("signature") ParamsDigest signature)
       throws IOException;
 

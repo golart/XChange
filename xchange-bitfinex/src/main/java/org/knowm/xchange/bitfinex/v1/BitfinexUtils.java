@@ -1,6 +1,7 @@
 package org.knowm.xchange.bitfinex.v1;
 
-import org.knowm.xchange.bitfinex.common.dto.BitfinexException;
+import org.knowm.xchange.bitfinex.v1.dto.BitfinexException;
+import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 
 /** A central place for shared Bitfinex properties */
@@ -9,21 +10,41 @@ public final class BitfinexUtils {
   /** private Constructor */
   private BitfinexUtils() {}
 
-  public static String adaptXchangeCurrency(String xchangeSymbol) {
-    String currency = xchangeSymbol.toLowerCase();
-    if (currency.equals("dash")) {
-      currency = "dsh";
+  public static String adaptXchangeCurrency(Currency xchangeSymbol) {
+
+    if (xchangeSymbol == null) {
+      return null;
     }
-    if (currency.equals("qtum")) {
-      currency = "qtm";
-    }
-    return currency;
+
+    return xchangeSymbol.toString(); // .toLowerCase();
   }
 
   public static String toPairString(CurrencyPair currencyPair) {
 
-    return adaptXchangeCurrency(currencyPair.base.toString())
-        + adaptXchangeCurrency(currencyPair.counter.toString());
+    if (currencyPair == null) {
+      return null;
+    }
+
+    String base = adaptXchangeCurrency(currencyPair.base);
+    String counter = adaptXchangeCurrency(currencyPair.counter);
+    return "t"
+        + base
+        + currencySeparator(base, counter)
+        + adaptXchangeCurrency(currencyPair.counter);
+  }
+
+  /**
+   * unfortunatelly we need to go this way, since the pairs at bitfinex are not very consequent see
+   * dusk:xxx pairs at https://api.bitfinex.com/v1/symbols_details the same for xxx:cnht
+   *
+   * @param base
+   * @return
+   */
+  private static String currencySeparator(String base, String counter) {
+    if (base.length() > 3 || counter.length() > 3) {
+      return ":";
+    }
+    return "";
   }
 
   /**

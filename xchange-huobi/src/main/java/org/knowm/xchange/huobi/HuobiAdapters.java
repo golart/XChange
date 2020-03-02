@@ -85,9 +85,13 @@ public class HuobiAdapters {
 
   private static CurrencyPairMetaData adaptPair(
       HuobiAssetPair pair, CurrencyPairMetaData metadata) {
-    BigDecimal minQty = metadata == null ? null : metadata.getMinimumAmount();
+    BigDecimal minQty =
+        metadata == null
+            ? null
+            : metadata
+                .getMinimumAmount()
+                .setScale(Integer.parseInt(pair.getAmountPrecision()), RoundingMode.DOWN);
     FeeTier[] feeTiers = metadata == null ? null : metadata.getFeeTiers();
-
     return new CurrencyPairMetaData(
         fee,
         minQty, // Min amount
@@ -105,6 +109,10 @@ public class HuobiAdapters {
     for (Map.Entry<String, HuobiBalanceSum> record : huobiWallet.entrySet()) {
       try {
         Currency currency = adaptCurrency(record.getKey());
+        if (currency == null) {
+          // Avoid creating Balance objects with null currency.
+          continue;
+        }
         Balance balance =
             new Balance(
                 currency,
@@ -116,7 +124,7 @@ public class HuobiAdapters {
         // It might be a new currency. Ignore the exception and continue with other currency.
       }
     }
-    return new Wallet(balances);
+    return Wallet.Builder.from(balances).build();
   }
 
   public static Map<String, HuobiBalanceSum> adaptBalance(HuobiBalanceRecord[] huobiBalance) {
@@ -244,7 +252,7 @@ public class HuobiAdapters {
     return result;
   }
 
-  private static OrderType adaptOrderType(String orderType) {
+  public static OrderType adaptOrderType(String orderType) {
     if (orderType.startsWith("buy")) {
       return OrderType.BID;
     }
