@@ -8,7 +8,8 @@
         <version>4.4.1</version>
     </parent>
 
-    <artifactId>xchange-poloniex</artifactId>
+    <artifactId>xchange-poloniex-custom</artifactId>
+    <version>4.4.1.0</version>
 
     <name>XChange Poloniex</name>
     <description>XChange implementation for the Poloniex Exchange</description>
@@ -21,12 +22,24 @@
         <url>http://knowm.org/open-source/xchange/</url>
     </organization>
 
+    <distributionManagement>
+        <repository>
+            <id>myMavenRepoWrite</id>
+            <url>https://mymavenrepo.com/repo/Rsa6p5lI8EMjZNyAAu6Z/</url>
+        </repository>
+        <snapshotRepository>
+            <id>myMavenRepoWrite</id>
+            <url>https://mymavenrepo.com/repo/Rsa6p5lI8EMjZNyAAu6Z/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+
     <dependencies>
 
         <dependency>
             <groupId>org.knowm.xchange</groupId>
             <artifactId>xchange-core</artifactId>
-            <version>${project.version}</version>
+            <version>4.4.1</version>
         </dependency>
 
     </dependencies>

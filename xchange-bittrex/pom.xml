@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -8,7 +9,8 @@
         <version>4.4.1</version>
     </parent>
 
-    <artifactId>xchange-bittrex</artifactId>
+    <artifactId>xchange-bittrex-custom</artifactId>
+    <version>4.4.1.0</version>
 
     <name>XChange Bittrex</name>
     <description>XChange implementation for the Bittrex Exchange</description>
@@ -21,13 +23,23 @@
         <url>http://knowm.org/open-source/xchange/</url>
     </organization>
 
+    <distributionManagement>
+        <repository>
+            <id>myMavenRepoWrite</id>
+            <url>https://mymavenrepo.com/repo/Rsa6p5lI8EMjZNyAAu6Z/</url>
+        </repository>
+        <snapshotRepository>
+            <id>myMavenRepoWrite</id>
+            <url>https://mymavenrepo.com/repo/Rsa6p5lI8EMjZNyAAu6Z/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <!-- Parent provides default configuration for dependencies -->
     <dependencies>
-
         <dependency>
             <groupId>org.knowm.xchange</groupId>
-            <artifactId>xchange-core</artifactId>
-            <version>${project.version}</version>
+            <artifactId>xchange-core-custom</artifactId>
+            <version>4.4.1</version>
         </dependency>
 
         <dependency>
