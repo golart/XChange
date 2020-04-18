@@ -1,187 +1,208 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package org.knowm.xchange.binance;
 
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.function.Function;
-import java.util.List;
-import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.binance.dto.marketdata.BinancePriceQuantity;
-import java.util.Set;
-import org.knowm.xchange.binance.service.BinanceTradeService;
-import java.util.HashSet;
-import org.knowm.xchange.dto.trade.StopOrder;
-import org.knowm.xchange.dto.trade.LimitOrder;
-import org.knowm.xchange.dto.trade.MarketOrder;
-import java.math.BigDecimal;
-import org.knowm.xchange.binance.dto.trade.BinanceOrderType;
 import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.binance.dto.trade.BinanceOrderStatus;
-import java.util.Iterator;
-import java.util.Arrays;
-import org.knowm.xchange.dto.Order;
+import org.knowm.xchange.binance.dto.trade.BinanceOrderType;
 import org.knowm.xchange.binance.dto.trade.OrderSide;
+import org.knowm.xchange.binance.service.BinanceTradeService.BinanceOrderFlags;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.dto.Order;
+import org.knowm.xchange.dto.Order.IOrderFlags;
+import org.knowm.xchange.dto.Order.OrderType;
+import org.knowm.xchange.dto.marketdata.Ticker;
+import org.knowm.xchange.dto.trade.LimitOrder;
+import org.knowm.xchange.dto.trade.MarketOrder;
+import org.knowm.xchange.dto.trade.StopOrder;
 
-public class BinanceAdapters
-{
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public class BinanceAdapters {
+
     private BinanceAdapters() {
     }
-    
-    public static String toSymbol(final CurrencyPair pair) {
-        if (pair.equals((Object)CurrencyPair.IOTA_BTC)) {
+
+    public static String toSymbol(CurrencyPair pair) {
+        if (pair.equals(CurrencyPair.IOTA_BTC)) {
             return "IOTABTC";
         }
         return pair.base.getCurrencyCode() + pair.counter.getCurrencyCode();
     }
-    
-    public static String toSymbol(final Currency currency) {
-        if (Currency.IOT.equals((Object)currency)) {
+
+    public static String toSymbol(Currency currency) {
+        if (Currency.IOT.equals(currency)) {
             return "IOTA";
         }
         return currency.getSymbol();
     }
-    
-    public static Order.OrderType convert(final OrderSide side) {
+
+    public static OrderType convert(OrderSide side) {
         switch (side) {
-            case BUY: {
-                return Order.OrderType.BID;
-            }
-            case SELL: {
-                return Order.OrderType.ASK;
-            }
-            default: {
+            case BUY:
+                return OrderType.BID;
+            case SELL:
+                return OrderType.ASK;
+            default:
                 throw new RuntimeException("Not supported order side: " + side);
-            }
         }
     }
-    
-    public static OrderSide convert(final Order.OrderType type) {
+
+    public static OrderSide convert(OrderType type) {
         switch (type) {
-            case ASK: {
+            case ASK:
                 return OrderSide.SELL;
-            }
-            case BID: {
+            case BID:
                 return OrderSide.BUY;
-            }
-            default: {
+            default:
                 throw new RuntimeException("Not supported order type: " + type);
-            }
         }
     }
-    
-    public static CurrencyPair convert(final String symbol) {
-        for (final Currency base : Arrays.asList(Currency.BTC, Currency.ETH, Currency.BNB, Currency.USDT)) {
+
+    public static CurrencyPair convert(String symbol) {
+        // Iterate by base currency priority at binance.
+        for (Currency base : Arrays.asList(Currency.BTC, Currency.ETH, Currency.BNB, Currency.USDT)) {
             if (symbol.contains(base.toString())) {
-                final String counter = symbol.replace(base.toString(), "");
+                String counter = symbol.replace(base.toString(), "");
                 return new CurrencyPair(base, new Currency(counter));
             }
         }
         throw new IllegalArgumentException("Could not parse currency pair from '" + symbol + "'");
     }
-    
-    public static long id(final String id) {
+
+    public static long id(String id) {
         try {
             return Long.valueOf(id);
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             throw new RuntimeException("Binance id must be a valid long number.", e);
         }
     }
-    
-    public static Order.OrderStatus adaptOrderStatus(final BinanceOrderStatus orderStatus) {
+
+    public static Order.OrderStatus adaptOrderStatus(BinanceOrderStatus orderStatus) {
         switch (orderStatus) {
-            case NEW: {
+            case NEW:
                 return Order.OrderStatus.NEW;
-            }
-            case FILLED: {
+            case FILLED:
                 return Order.OrderStatus.FILLED;
-            }
-            case EXPIRED: {
+            case EXPIRED:
                 return Order.OrderStatus.EXPIRED;
-            }
-            case CANCELED: {
+            case CANCELED:
                 return Order.OrderStatus.CANCELED;
-            }
-            case REJECTED: {
+            case REJECTED:
                 return Order.OrderStatus.REJECTED;
-            }
-            case PENDING_CANCEL: {
+            case PENDING_CANCEL:
                 return Order.OrderStatus.PENDING_CANCEL;
-            }
-            case PARTIALLY_FILLED: {
+            case PARTIALLY_FILLED:
                 return Order.OrderStatus.PARTIALLY_FILLED;
-            }
-            default: {
+            default:
                 return Order.OrderStatus.UNKNOWN;
-            }
         }
     }
-    
-    public static Order.OrderType convertType(final boolean isBuyer) {
-        return isBuyer ? Order.OrderType.BID : Order.OrderType.ASK;
+
+    public static OrderType convertType(boolean isBuyer) {
+        return isBuyer ? OrderType.BID : OrderType.ASK;
     }
-    
-    public static CurrencyPair adaptSymbol(final String symbol) {
-        final int pairLength = symbol.length();
+
+    public static CurrencyPair adaptSymbol(String symbol) {
+        int pairLength = symbol.length();
         if (symbol.endsWith("USDT")) {
             return new CurrencyPair(symbol.substring(0, pairLength - 4), "USDT");
-        }
-        if (symbol.endsWith("TUSD")) {
+        } else if (symbol.endsWith("TUSD")) {
             return new CurrencyPair(symbol.substring(0, pairLength - 4), "TUSD");
-        }
-        if (symbol.endsWith("USDS")) {
+        } else if (symbol.endsWith("USDS")) {
             return new CurrencyPair(symbol.substring(0, pairLength - 4), "USDS");
-        }
-        if (symbol.endsWith("USDC")) {
+        } else if (symbol.endsWith("USDC")) {
             return new CurrencyPair(symbol.substring(0, pairLength - 4), "USDC");
+        } else {
+            return new CurrencyPair(
+                    symbol.substring(0, pairLength - 3), symbol.substring(pairLength - 3));
         }
-        return new CurrencyPair(symbol.substring(0, pairLength - 3), symbol.substring(pairLength - 3));
     }
-    
-    public static Order adaptOrder(final BinanceOrder order) {
-        final Order.OrderType type = convert(order.side);
-        final CurrencyPair currencyPair = adaptSymbol(order.symbol);
-        final Order.OrderStatus orderStatus = adaptOrderStatus(order.bStatus);
-        BigDecimal averagePrice;
+
+    public static Order adaptOrder(BinanceOrder order) {
+        OrderType type = convert(order.side);
+        CurrencyPair currencyPair = adaptSymbol(order.symbol);
+
+        Order.OrderStatus orderStatus = adaptOrderStatus(order.bStatus);
+        final BigDecimal averagePrice;
         if (order.executedQty.signum() == 0 || order.bType.equals(BinanceOrderType.MARKET)) {
             averagePrice = BigDecimal.ZERO;
-        }
-        else {
+        } else {
             averagePrice = order.price;
         }
+
         Order result;
         if (order.bType.equals(BinanceOrderType.MARKET)) {
-            result = (Order)new MarketOrder(type, order.origQty, currencyPair, Long.toString(order.orderId), order.getTime(), averagePrice, order.executedQty, BigDecimal.ZERO, orderStatus);
+            result =
+                    new MarketOrder(
+                            type,
+                            order.origQty,
+                            currencyPair,
+                            Long.toString(order.orderId),
+                            order.getTime(),
+                            averagePrice,
+                            order.executedQty,
+                            BigDecimal.ZERO,
+                            orderStatus);
+        } else if (order.bType.equals(BinanceOrderType.LIMIT)
+                || order.bType.equals(BinanceOrderType.LIMIT_MAKER)) {
+            result =
+                    new LimitOrder(
+                            type,
+                            order.origQty,
+                            currencyPair,
+                            Long.toString(order.orderId),
+                            order.getTime(),
+                            order.price,
+                            averagePrice,
+                            order.executedQty,
+                            BigDecimal.ZERO,
+                            orderStatus);
+        } else {
+            result =
+                    new StopOrder(
+                            type,
+                            order.origQty,
+                            currencyPair,
+                            Long.toString(order.orderId),
+                            order.getTime(),
+                            order.stopPrice,
+                            averagePrice,
+                            order.executedQty,
+                            orderStatus);
         }
-        else if (order.bType.equals(BinanceOrderType.LIMIT) || order.bType.equals(BinanceOrderType.LIMIT_MAKER)) {
-            result = (Order)new LimitOrder(type, order.origQty, currencyPair, Long.toString(order.orderId), order.getTime(), order.price, averagePrice, order.executedQty, BigDecimal.ZERO, orderStatus);
-        }
-        else {
-            result = (Order)new StopOrder(type, order.origQty, currencyPair, Long.toString(order.orderId), order.getTime(), order.stopPrice, averagePrice, order.executedQty, orderStatus);
-        }
-        final Set<Order.IOrderFlags> flags = new HashSet<Order.IOrderFlags>();
+        Set<IOrderFlags> flags = new HashSet<>();
         if (order.clientOrderId != null) {
-            flags.add((Order.IOrderFlags)new BinanceTradeService.BinanceOrderFlags() {
-                @Override
-                public String getClientId() {
-                    return order.clientOrderId;
-                }
-            });
+            flags.add(
+                    new BinanceOrderFlags() {
+                        @Override
+                        public String getClientId() {
+                            return order.clientOrderId;
+                        }
+                    });
         }
-        result.setOrderFlags((Set)flags);
+        result.setOrderFlags(flags);
         return result;
     }
-    
-    private static Ticker adaptPriceQuantity(final BinancePriceQuantity priceQuantity) {
-        return new Ticker.Builder().currencyPair(adaptSymbol(priceQuantity.symbol)).ask(priceQuantity.askPrice).askSize(priceQuantity.askQty).bid(priceQuantity.bidPrice).bidSize(priceQuantity.bidQty).build();
+
+    private static Ticker adaptPriceQuantity(BinancePriceQuantity priceQuantity) {
+        return new Ticker.Builder()
+                .currencyPair(adaptSymbol(priceQuantity.symbol))
+                .ask(priceQuantity.askPrice)
+                .askSize(priceQuantity.askQty)
+                .bid(priceQuantity.bidPrice)
+                .bidSize(priceQuantity.bidQty)
+                .build();
     }
-    
-    public static List<Ticker> adaptPriceQuantities(final List<BinancePriceQuantity> priceQuantities) {
-        return priceQuantities.stream().map((Function<? super Object, ?>)BinanceAdapters::adaptPriceQuantity).collect((Collector<? super Object, ?, List<Ticker>>)Collectors.toList());
+
+    public static List<Ticker> adaptPriceQuantities(List<BinancePriceQuantity> priceQuantities) {
+        return priceQuantities.stream()
+                .map(BinanceAdapters::adaptPriceQuantity)
+                .collect(Collectors.toList());
     }
 }
