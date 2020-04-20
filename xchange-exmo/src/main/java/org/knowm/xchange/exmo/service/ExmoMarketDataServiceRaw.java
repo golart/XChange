@@ -1,10 +1,5 @@
 package org.knowm.xchange.exmo.service;
 
-import static org.apache.commons.lang3.StringUtils.join;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.*;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
@@ -18,6 +13,12 @@ import org.knowm.xchange.dto.meta.CurrencyPairMetaData;
 import org.knowm.xchange.dto.meta.ExchangeMetaData;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.exmo.dto.meta.ExmoCurrencyPairMetaData;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.join;
 
 public class ExmoMarketDataServiceRaw extends BaseExmoService {
   protected ExmoMarketDataServiceRaw(Exchange exchange) {
@@ -62,23 +63,20 @@ public class ExmoMarketDataServiceRaw extends BaseExmoService {
       Map<String, String> data = map.get(marketName);
 
       Integer priceScale = null;
-      BigDecimal tradingFee = null;
-
       if (currencyPairs.containsKey(currencyPair)) {
         priceScale = currencyPairs.get(currencyPair).getPriceScale();
-        tradingFee = currencyPairs.get(currencyPair).getTradingFee();
       }
 
       CurrencyPairMetaData staticMeta = currencyPairs.get(currencyPair);
       // min_quantity or min_amount ???
       CurrencyPairMetaData currencyPairMetaData =
           new ExmoCurrencyPairMetaData(
-              tradingFee,
-              new BigDecimal(data.get("min_quantity")),
-              new BigDecimal(data.get("max_quantity")),
-              priceScale,
-              new BigDecimal(data.get("min_amount")),
-              staticMeta != null ? staticMeta.getFeeTiers() : null);
+                  new BigDecimal(data.get("commission_taker_percent")).multiply(BigDecimal.valueOf(0.01)), // or commission_maker_percent for maker fee
+                  new BigDecimal(data.get("min_quantity")),
+                  new BigDecimal(data.get("max_quantity")),
+                  priceScale,
+                  new BigDecimal(data.get("min_amount")),
+                  staticMeta != null ? staticMeta.getFeeTiers() : null);
 
       currencyPairs.put(currencyPair, currencyPairMetaData);
 
