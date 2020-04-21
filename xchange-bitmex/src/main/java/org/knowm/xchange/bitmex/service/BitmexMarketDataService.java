@@ -1,5 +1,7 @@
 package org.knowm.xchange.bitmex.service;
 
+import java.io.IOException;
+import java.util.List;
 import org.knowm.xchange.bitmex.BitmexAdapters;
 import org.knowm.xchange.bitmex.BitmexExchange;
 import org.knowm.xchange.bitmex.dto.account.BitmexTicker;
@@ -10,9 +12,6 @@ import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.marketdata.Trades;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.service.marketdata.MarketDataService;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Implementation of the market data service for Bitmex

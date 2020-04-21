@@ -1,16 +1,15 @@
 package org.knowm.xchange.binance.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.account.*;
 import org.knowm.xchange.binance.dto.account.DepositList.BinanceDeposit;
 import org.knowm.xchange.currency.Currency;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
 
 public class BinanceAccountServiceRaw extends BinanceBaseService {
 
@@ -19,7 +18,7 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
   }
 
   public BinanceAccountInformation account(Long recvWindow, long timestamp)
-          throws BinanceException, IOException {
+      throws BinanceException, IOException {
     return binance.account(recvWindow, timestamp, super.apiKey, super.signatureCreator);
   }
 
@@ -27,96 +26,122 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
   // lack of current documentation
 
   public String withdraw(String asset, String address, BigDecimal amount)
-          throws IOException, BinanceException {
+      throws IOException, BinanceException {
     // the name parameter seams to be mandatory
     String name = address.length() <= 10 ? address : address.substring(0, 10);
     return withdraw(asset, address, amount, name, null, getTimestamp());
   }
 
   public String withdraw(String asset, String address, String addressTag, BigDecimal amount)
-          throws IOException, BinanceException {
+      throws IOException, BinanceException {
     // the name parameter seams to be mandatory
     String name = address.length() <= 10 ? address : address.substring(0, 10);
     Long recvWindow =
-            (Long) exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
+        (Long) exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
     return withdraw(asset, address, addressTag, amount, name, recvWindow, getTimestamp());
   }
 
   private String withdraw(
-          String asset, String address, BigDecimal amount, String name, Long recvWindow, long timestamp)
-          throws IOException, BinanceException {
+      String asset, String address, BigDecimal amount, String name, Long recvWindow, long timestamp)
+      throws IOException, BinanceException {
     WithdrawRequest result =
-            binance.withdraw(
-                    asset,
-                    address,
-                    null,
-                    amount,
-                    name,
-                    recvWindow,
-                    timestamp,
-                    super.apiKey,
-                    super.signatureCreator);
+        binance.withdraw(
+            asset,
+            address,
+            null,
+            amount,
+            name,
+            recvWindow,
+            timestamp,
+            super.apiKey,
+            super.signatureCreator);
     checkWapiResponse(result);
     return result.getData();
   }
 
   private String withdraw(
-          String asset,
-          String address,
-          String addressTag,
-          BigDecimal amount,
-          String name,
-          Long recvWindow,
-          long timestamp)
-          throws IOException, BinanceException {
+      String asset,
+      String address,
+      String addressTag,
+      BigDecimal amount,
+      String name,
+      Long recvWindow,
+      long timestamp)
+      throws IOException, BinanceException {
     WithdrawRequest result =
-            binance.withdraw(
-                    asset,
-                    address,
-                    addressTag,
-                    amount,
-                    name,
-                    recvWindow,
-                    timestamp,
-                    super.apiKey,
-                    super.signatureCreator);
+        binance.withdraw(
+            asset,
+            address,
+            addressTag,
+            amount,
+            name,
+            recvWindow,
+            timestamp,
+            super.apiKey,
+            super.signatureCreator);
     checkWapiResponse(result);
     return result.getData();
   }
 
   public DepositAddress requestDepositAddress(Currency currency) throws IOException {
     Long recvWindow =
-            (Long) exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
+        (Long) exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
     return binance.depositAddress(
-            BinanceAdapters.toSymbol(currency),
-            recvWindow,
-            getTimestamp(),
-            apiKey,
-            super.signatureCreator);
+        BinanceAdapters.toSymbol(currency),
+        recvWindow,
+        getTimestamp(),
+        apiKey,
+        super.signatureCreator);
   }
 
   public AssetDetailResponse requestAssetDetail() throws IOException {
     Long recvWindow =
-            (Long) exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
+        (Long) exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
     return binance.assetDetail(recvWindow, getTimestamp(), apiKey, super.signatureCreator);
   }
 
   public List<BinanceDeposit> depositHistory(
-          String asset, Long startTime, Long endTime, Long recvWindow, long timestamp)
-          throws BinanceException, IOException {
+      String asset, Long startTime, Long endTime, Long recvWindow, long timestamp)
+      throws BinanceException, IOException {
     DepositList result =
-            binance.depositHistory(
-                    asset, startTime, endTime, recvWindow, timestamp, super.apiKey, super.signatureCreator);
+        binance.depositHistory(
+            asset, startTime, endTime, recvWindow, timestamp, super.apiKey, super.signatureCreator);
     return checkWapiResponse(result);
   }
 
   public List<WithdrawList.BinanceWithdraw> withdrawHistory(
-          String asset, Long startTime, Long endTime, Long recvWindow, long timestamp)
-          throws BinanceException, IOException {
+      String asset, Long startTime, Long endTime, Long recvWindow, long timestamp)
+      throws BinanceException, IOException {
     WithdrawList result =
-            binance.withdrawHistory(
-                    asset, startTime, endTime, recvWindow, timestamp, super.apiKey, super.signatureCreator);
+        binance.withdrawHistory(
+            asset, startTime, endTime, recvWindow, timestamp, super.apiKey, super.signatureCreator);
     return checkWapiResponse(result);
+  }
+
+  public AssetDribbletLogResponse.AssetDribbletLogResults getAssetDribbletLog()
+      throws BinanceException, IOException {
+    return binance
+        .getAssetDribbletLog(getRecvWindow(), getTimestamp(), super.apiKey, super.signatureCreator)
+        .getData();
+  }
+
+  public List<AssetDividendResponse.AssetDividend> getAssetDividend(Long startTime, Long endTime)
+      throws BinanceException, IOException {
+    return getAssetDividend("", startTime, endTime);
+  }
+
+  public List<AssetDividendResponse.AssetDividend> getAssetDividend(
+      String asset, Long startTime, Long endTime) throws BinanceException, IOException {
+    return binance
+        .getAssetDividend(
+            asset,
+            startTime,
+            endTime,
+            getRecvWindow(),
+            getTimestamp(),
+            super.apiKey,
+            super.signatureCreator)
+        .getData();
   }
 
   private <T> T checkWapiResponse(WapiResponse<T> result) {

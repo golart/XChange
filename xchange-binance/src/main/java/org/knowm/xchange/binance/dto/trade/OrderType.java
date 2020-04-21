@@ -6,19 +6,18 @@ public enum OrderType {
   LIMIT,
   MARKET,
   TAKE_PROFIT_LIMIT,
+  TAKE_PROFIT_MARKET,
+  TRAILING_STOP_MARKET,
   STOP_LOSS_LIMIT,
   STOP_LOSS,
   TAKE_PROFIT,
   LIMIT_MAKER;
 
-  private OrderType() {
-  }
-
   @JsonCreator
   public static OrderType getOrderType(String s) {
     try {
-      return valueOf(s);
-    } catch (Exception var2) {
+      return OrderType.valueOf(s);
+    } catch (Exception e) {
       throw new RuntimeException("Unknown order type " + s + ".");
     }
   }

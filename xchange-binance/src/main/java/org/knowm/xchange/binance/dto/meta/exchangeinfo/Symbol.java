@@ -95,23 +95,23 @@ public class Symbol {
   @Override
   public String toString() {
     return "ClassPojo [quoteAsset = "
-            + quoteAsset
-            + ", icebergAllowed = "
-            + icebergAllowed
-            + ", baseAsset = "
-            + baseAsset
-            + ", symbol = "
-            + symbol
-            + ", status = "
-            + status
-            + ", quotePrecision = "
-            + quotePrecision
-            + ", baseAssetPrecision = "
-            + baseAssetPrecision
-            + ", orderTypes = "
-            + orderTypes
-            + ", filters = "
-            + filters
-            + "]";
+        + quoteAsset
+        + ", icebergAllowed = "
+        + icebergAllowed
+        + ", baseAsset = "
+        + baseAsset
+        + ", symbol = "
+        + symbol
+        + ", status = "
+        + status
+        + ", quotePrecision = "
+        + quotePrecision
+        + ", baseAssetPrecision = "
+        + baseAssetPrecision
+        + ", orderTypes = "
+        + orderTypes
+        + ", filters = "
+        + filters
+        + "]";
   }
 }

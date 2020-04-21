@@ -1,12 +1,14 @@
+//
+// Decompiled by Procyon v0.5.36
+//
+
 package org.knowm.xchange.binance.dto.account.margin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.math.BigDecimal;
 import org.knowm.xchange.currency.Currency;
 
-import java.math.BigDecimal;
-
 public class Transfer {
-
   private BigDecimal amount;
   private Currency asset;
   private TransferStatus status;
@@ -15,12 +17,12 @@ public class Transfer {
   private HistoryTransferType type;
 
   public Transfer(
-          @JsonProperty("amount") BigDecimal amount,
-          @JsonProperty("asset") String asset,
-          @JsonProperty("status") String status,
-          @JsonProperty("timestamp") Long timestamp,
-          @JsonProperty("txId") Long txId,
-          @JsonProperty("type") String type) {
+      @JsonProperty("amount") final BigDecimal amount,
+      @JsonProperty("asset") final String asset,
+      @JsonProperty("status") final String status,
+      @JsonProperty("timestamp") final Long timestamp,
+      @JsonProperty("txId") final Long txId,
+      @JsonProperty("type") final String type) {
     this.amount = amount;
     this.asset = Currency.getInstance(asset);
     this.status = TransferStatus.valueOf(status);
@@ -30,50 +32,50 @@ public class Transfer {
   }
 
   public BigDecimal getAmount() {
-    return amount;
+    return this.amount;
   }
 
-  public void setAmount(BigDecimal amount) {
+  public void setAmount(final BigDecimal amount) {
     this.amount = amount;
   }
 
   public Currency getAsset() {
-    return asset;
+    return this.asset;
   }
 
-  public void setAsset(Currency asset) {
+  public void setAsset(final Currency asset) {
     this.asset = asset;
   }
 
   public TransferStatus getStatus() {
-    return status;
+    return this.status;
   }
 
-  public void setStatus(TransferStatus status) {
+  public void setStatus(final TransferStatus status) {
     this.status = status;
   }
 
   public Long getTimestamp() {
-    return timestamp;
+    return this.timestamp;
   }
 
-  public void setTimestamp(Long timestamp) {
+  public void setTimestamp(final Long timestamp) {
     this.timestamp = timestamp;
   }
 
   public Long getTxId() {
-    return txId;
+    return this.txId;
   }
 
-  public void setTxId(Long txId) {
+  public void setTxId(final Long txId) {
     this.txId = txId;
   }
 
   public HistoryTransferType getType() {
-    return type;
+    return this.type;
   }
 
-  public void setType(HistoryTransferType type) {
+  public void setType(final HistoryTransferType type) {
     this.type = type;
   }
 }

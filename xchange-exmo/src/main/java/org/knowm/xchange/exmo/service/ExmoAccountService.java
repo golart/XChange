@@ -26,9 +26,10 @@ public class ExmoAccountService extends ExmoAccountServiceRaw implements Account
   public AccountInfo getAccountInfo() throws IOException {
     final Map userInfo = exmo.userInfo(signatureCreator, apiKey, exchange.getNonceFactory());
     if (userInfo.get("uid") != null) {
-      return new AccountInfo(userInfo.get("uid").toString(), new Wallet(balances()));
+      return new AccountInfo(
+          userInfo.get("uid").toString(), Wallet.Builder.from(balances()).build());
     }
-    return new AccountInfo(new Wallet(balances()));
+    return new AccountInfo(Wallet.Builder.from(balances()).build());
   }
 
   @Override
@@ -66,8 +67,8 @@ public class ExmoAccountService extends ExmoAccountServiceRaw implements Account
       throw new IllegalStateException("Don't understand " + params);
     }
 
-    Boolean resultBool = (Boolean) result.get("result");
-    if (resultBool != null && resultBool) {
+    Boolean success = (Boolean) result.get("result");
+    if (success) {
       return result.get("task_id").toString();
     } else {
       throw new ExchangeException("Withdrawal failed: " + result.get("error").toString());

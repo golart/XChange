@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>org.knowm.xchange</groupId>
 		<artifactId>xchange-parent</artifactId>
-		<version>4.3.22-SNAPSHOT</version>
+		<version>4.4.2</version>
 	</parent>
 
 	<artifactId>xchange-bitmex-custom</artifactId>
-	<version>4.3.16.2</version>
+	<version>4.4.2.1</version>
 
 
 	<name>XChange BitMex</name>
@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>org.knowm.xchange</groupId>
 			<artifactId>xchange-core</artifactId>
-			<version>4.3.16</version>
+			<version>4.4.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.knowm.xchange</groupId>
@@ -52,6 +52,9 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
-
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 	</dependencies>
 </project>

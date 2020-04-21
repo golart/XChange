@@ -6,9 +6,9 @@ public final class WithdrawRequest extends WapiResponse<String> {
   public final String id;
 
   public WithdrawRequest(
-          @JsonProperty("success") boolean success,
-          @JsonProperty("msg") String msg,
-          @JsonProperty("id") String id) {
+      @JsonProperty("success") boolean success,
+      @JsonProperty("msg") String msg,
+      @JsonProperty("id") String id) {
     super(success, msg);
     this.id = id;
   }

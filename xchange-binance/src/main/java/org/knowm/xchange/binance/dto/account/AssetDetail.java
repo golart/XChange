@@ -1,7 +1,6 @@
 package org.knowm.xchange.binance.dto.account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.math.BigDecimal;
 
 public class AssetDetail {
@@ -12,10 +11,10 @@ public class AssetDetail {
   private final boolean withdrawStatus;
 
   public AssetDetail(
-          @JsonProperty("minWithdrawAmount") String minWithdrawAmount,
-          @JsonProperty("depositStatus") boolean depositStatus,
-          @JsonProperty("withdrawFee") BigDecimal withdrawFee,
-          @JsonProperty("withdrawStatus") boolean withdrawStatus) {
+      @JsonProperty("minWithdrawAmount") String minWithdrawAmount,
+      @JsonProperty("depositStatus") boolean depositStatus,
+      @JsonProperty("withdrawFee") BigDecimal withdrawFee,
+      @JsonProperty("withdrawStatus") boolean withdrawStatus) {
     this.minWithdrawAmount = minWithdrawAmount;
     this.depositStatus = depositStatus;
     this.withdrawFee = withdrawFee;
@@ -41,18 +40,18 @@ public class AssetDetail {
   @Override
   public String toString() {
     return "AssetDetail{"
-            + "minWithdrawAmount = '"
-            + minWithdrawAmount
-            + '\''
-            + ",depositStatus = '"
-            + depositStatus
-            + '\''
-            + ",withdrawFee = '"
-            + withdrawFee
-            + '\''
-            + ",withdrawStatus = '"
-            + withdrawStatus
-            + '\''
-            + "}";
+        + "minWithdrawAmount = '"
+        + minWithdrawAmount
+        + '\''
+        + ",depositStatus = '"
+        + depositStatus
+        + '\''
+        + ",withdrawFee = '"
+        + withdrawFee
+        + '\''
+        + ",withdrawStatus = '"
+        + withdrawStatus
+        + '\''
+        + "}";
   }
 }

@@ -1,12 +1,14 @@
+//
+// Decompiled by Procyon v0.5.36
+//
+
 package org.knowm.xchange.binance.dto.account.margin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 public class MarginAccount {
-
   private Boolean borrowEnabled;
   private BigDecimal marginLevel;
   private BigDecimal totalAssetOfBtc;
@@ -17,14 +19,14 @@ public class MarginAccount {
   private List<MarginAssetBalance> userAssets;
 
   public MarginAccount(
-          @JsonProperty("borrowEnabled") Boolean borrowEnabled,
-          @JsonProperty("marginLevel") BigDecimal marginLevel,
-          @JsonProperty("totalAssetOfBtc") BigDecimal totalAssetOfBtc,
-          @JsonProperty("totalLiabilityOfBtc") BigDecimal totalLiabilityOfBtc,
-          @JsonProperty("totalNetAssetOfBtc") BigDecimal totalNetAssetOfBtc,
-          @JsonProperty("tradeEnabled") Boolean tradeEnabled,
-          @JsonProperty("transferEnabled") Boolean transferEnabled,
-          @JsonProperty("userAssets") List<MarginAssetBalance> userAssets) {
+      @JsonProperty("borrowEnabled") final Boolean borrowEnabled,
+      @JsonProperty("marginLevel") final BigDecimal marginLevel,
+      @JsonProperty("totalAssetOfBtc") final BigDecimal totalAssetOfBtc,
+      @JsonProperty("totalLiabilityOfBtc") final BigDecimal totalLiabilityOfBtc,
+      @JsonProperty("totalNetAssetOfBtc") final BigDecimal totalNetAssetOfBtc,
+      @JsonProperty("tradeEnabled") final Boolean tradeEnabled,
+      @JsonProperty("transferEnabled") final Boolean transferEnabled,
+      @JsonProperty("userAssets") final List<MarginAssetBalance> userAssets) {
     this.borrowEnabled = borrowEnabled;
     this.marginLevel = marginLevel;
     this.totalAssetOfBtc = totalAssetOfBtc;
@@ -36,66 +38,66 @@ public class MarginAccount {
   }
 
   public Boolean getBorrowEnabled() {
-    return borrowEnabled;
+    return this.borrowEnabled;
   }
 
-  public void setBorrowEnabled(Boolean borrowEnabled) {
+  public void setBorrowEnabled(final Boolean borrowEnabled) {
     this.borrowEnabled = borrowEnabled;
   }
 
   public BigDecimal getMarginLevel() {
-    return marginLevel;
+    return this.marginLevel;
   }
 
-  public void setMarginLevel(BigDecimal marginLevel) {
+  public void setMarginLevel(final BigDecimal marginLevel) {
     this.marginLevel = marginLevel;
   }
 
   public BigDecimal getTotalAssetOfBtc() {
-    return totalAssetOfBtc;
+    return this.totalAssetOfBtc;
   }
 
-  public void setTotalAssetOfBtc(BigDecimal totalAssetOfBtc) {
+  public void setTotalAssetOfBtc(final BigDecimal totalAssetOfBtc) {
     this.totalAssetOfBtc = totalAssetOfBtc;
   }
 
   public BigDecimal getTotalLiabilityOfBtc() {
-    return totalLiabilityOfBtc;
+    return this.totalLiabilityOfBtc;
   }
 
-  public void setTotalLiabilityOfBtc(BigDecimal totalLiabilityOfBtc) {
+  public void setTotalLiabilityOfBtc(final BigDecimal totalLiabilityOfBtc) {
     this.totalLiabilityOfBtc = totalLiabilityOfBtc;
   }
 
   public BigDecimal getTotalNetAssetOfBtc() {
-    return totalNetAssetOfBtc;
+    return this.totalNetAssetOfBtc;
   }
 
-  public void setTotalNetAssetOfBtc(BigDecimal totalNetAssetOfBtc) {
+  public void setTotalNetAssetOfBtc(final BigDecimal totalNetAssetOfBtc) {
     this.totalNetAssetOfBtc = totalNetAssetOfBtc;
   }
 
   public Boolean getTradeEnabled() {
-    return tradeEnabled;
+    return this.tradeEnabled;
   }
 
-  public void setTradeEnabled(Boolean tradeEnabled) {
+  public void setTradeEnabled(final Boolean tradeEnabled) {
     this.tradeEnabled = tradeEnabled;
   }
 
   public Boolean getTransferEnabled() {
-    return transferEnabled;
+    return this.transferEnabled;
   }
 
-  public void setTransferEnabled(Boolean transferEnabled) {
+  public void setTransferEnabled(final Boolean transferEnabled) {
     this.transferEnabled = transferEnabled;
   }
 
   public List<MarginAssetBalance> getUserAssets() {
-    return userAssets;
+    return this.userAssets;
   }
 
-  public void setUserAssets(List<MarginAssetBalance> userAssets) {
+  public void setUserAssets(final List<MarginAssetBalance> userAssets) {
     this.userAssets = userAssets;
   }
 }

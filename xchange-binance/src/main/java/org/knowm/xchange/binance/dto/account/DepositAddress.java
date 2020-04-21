@@ -10,10 +10,10 @@ public final class DepositAddress {
   public String asset;
 
   public DepositAddress(
-          @JsonProperty("address") String address,
-          @JsonProperty("success") boolean success,
-          @JsonProperty("addressTag") String addressTag,
-          @JsonProperty("asset") String asset) {
+      @JsonProperty("address") String address,
+      @JsonProperty("success") boolean success,
+      @JsonProperty("addressTag") String addressTag,
+      @JsonProperty("asset") String asset) {
     this.address = address;
     this.success = success;
     this.addressTag = addressTag;

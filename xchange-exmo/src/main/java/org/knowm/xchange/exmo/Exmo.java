@@ -1,13 +1,12 @@
 package org.knowm.xchange.exmo;
 
-import si.mazi.rescu.SynchronizedValueFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import si.mazi.rescu.SynchronizedValueFactory;
 
 // todo: strongly type the returned values
 

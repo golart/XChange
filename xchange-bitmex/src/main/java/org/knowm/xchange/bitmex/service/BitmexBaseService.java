@@ -1,5 +1,8 @@
 package org.knowm.xchange.bitmex.service;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.knowm.xchange.bitmex.BitmexAuthenticated;
 import org.knowm.xchange.bitmex.BitmexException;
 import org.knowm.xchange.bitmex.BitmexExchange;
@@ -11,18 +14,11 @@ import si.mazi.rescu.HttpResponseAware;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.RestProxyFactory;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class BitmexBaseService extends BaseExchangeService<BitmexExchange> implements BaseService {
 
   protected final BitmexAuthenticated bitmex;
   protected final ParamsDigest signatureCreator;
-  protected final String RATE_LIMIT_LIMIT = "X-RateLimit-Limit";
-  protected final String RATE_LIMIT_REMAINING = "X-RateLimit-Remaining";
-  protected final String RATE_LIMIT_RESET = "X-RateLimit-Reset";
   protected static Integer rateLimit;
   protected static Integer rateLimitRemaining;
   protected static Long rateLimitReset;
@@ -105,12 +101,20 @@ public class BitmexBaseService extends BaseExchangeService<BitmexExchange> imple
     } finally {
       if (responseAware != null && !rateLimitsUpdated) {
         Map<String, List<String>> responseHeaders = responseAware.getResponseHeaders();
-        if (responseHeaders.get(RATE_LIMIT_LIMIT) != null
-            && responseHeaders.get(RATE_LIMIT_REMAINING) != null
-            && responseHeaders.get(RATE_LIMIT_RESET) != null) {
-          rateLimit = Integer.valueOf(responseHeaders.get(RATE_LIMIT_LIMIT).get(0));
-          rateLimitRemaining = Integer.valueOf(responseHeaders.get(RATE_LIMIT_REMAINING).get(0));
-          rateLimitReset = Long.valueOf(responseHeaders.get(RATE_LIMIT_RESET).get(0));
+
+        List<String> limitList = responseHeaders.get("X-RateLimit-Limit");
+        List<String> remainingList = responseHeaders.get("X-RateLimit-Remaining");
+        List<String> resetList = responseHeaders.get("X-RateLimit-Reset");
+
+        if (limitList != null
+            && !limitList.isEmpty()
+            && remainingList != null
+            && !remainingList.isEmpty()
+            && resetList != null
+            && !resetList.isEmpty()) {
+          rateLimit = Integer.valueOf(limitList.get(0));
+          rateLimitRemaining = Integer.valueOf(remainingList.get(0));
+          rateLimitReset = Long.valueOf(resetList.get(0));
           rateLimitsUpdated = true;
         }
       }

@@ -1,5 +1,10 @@
 package org.knowm.xchange.exmo.service;
 
+import static org.apache.commons.lang3.StringUtils.join;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.*;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
@@ -13,12 +18,6 @@ import org.knowm.xchange.dto.meta.CurrencyPairMetaData;
 import org.knowm.xchange.dto.meta.ExchangeMetaData;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.exmo.dto.meta.ExmoCurrencyPairMetaData;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.*;
-
-import static org.apache.commons.lang3.StringUtils.join;
 
 public class ExmoMarketDataServiceRaw extends BaseExmoService {
   protected ExmoMarketDataServiceRaw(Exchange exchange) {
@@ -71,12 +70,13 @@ public class ExmoMarketDataServiceRaw extends BaseExmoService {
       // min_quantity or min_amount ???
       CurrencyPairMetaData currencyPairMetaData =
           new ExmoCurrencyPairMetaData(
-                  new BigDecimal(data.get("commission_taker_percent")).multiply(BigDecimal.valueOf(0.01)), // or commission_maker_percent for maker fee
-                  new BigDecimal(data.get("min_quantity")),
-                  new BigDecimal(data.get("max_quantity")),
-                  priceScale,
-                  new BigDecimal(data.get("min_amount")),
-                  staticMeta != null ? staticMeta.getFeeTiers() : null);
+              new BigDecimal(data.get("commission_taker_percent"))
+                  .multiply(BigDecimal.valueOf(0.01)), // or commission_maker_percent for maker fee
+              new BigDecimal(data.get("min_quantity")),
+              new BigDecimal(data.get("max_quantity")),
+              priceScale,
+              new BigDecimal(data.get("min_amount")),
+              staticMeta != null ? staticMeta.getFeeTiers() : null);
 
       currencyPairs.put(currencyPair, currencyPairMetaData);
 
@@ -115,16 +115,17 @@ public class ExmoMarketDataServiceRaw extends BaseExmoService {
         String quantity = tradeData.get("quantity").toString();
         String amount = tradeData.get("amount").toString();
 
-        long unixTimestamp = Long.valueOf(tradeData.get("date").toString());
+        long unixTimestamp = Long.parseLong(tradeData.get("date").toString());
 
         results.add(
-            new Trade(
-                type.equalsIgnoreCase("sell") ? Order.OrderType.ASK : Order.OrderType.BID,
-                new BigDecimal(quantity),
-                currencyPair,
-                new BigDecimal(price),
-                new Date(unixTimestamp * 1000L),
-                id));
+            new Trade.Builder()
+                .type(type.equalsIgnoreCase("sell") ? Order.OrderType.ASK : Order.OrderType.BID)
+                .originalAmount(new BigDecimal(quantity))
+                .currencyPair(currencyPair)
+                .price(new BigDecimal(price))
+                .timestamp(new Date(unixTimestamp * 1000L))
+                .id(id)
+                .build());
       }
     }
 

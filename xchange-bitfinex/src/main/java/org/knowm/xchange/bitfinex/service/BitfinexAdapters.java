@@ -1,5 +1,9 @@
 package org.knowm.xchange.bitfinex.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +36,8 @@ import org.knowm.xchange.bitfinex.v1.dto.trade.BitfinexOrderFlags;
 import org.knowm.xchange.bitfinex.v1.dto.trade.BitfinexOrderStatusResponse;
 import org.knowm.xchange.bitfinex.v1.dto.trade.BitfinexTradeResponse;
 import org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexPublicTrade;
+import org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexTickerFundingCurrency;
+import org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexTickerTraidingPair;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -52,6 +58,7 @@ import org.knowm.xchange.dto.meta.ExchangeMetaData;
 import org.knowm.xchange.dto.trade.FixedRateLoanOrder;
 import org.knowm.xchange.dto.trade.FloatingRateLoanOrder;
 import org.knowm.xchange.dto.trade.LimitOrder;
+import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.dto.trade.OpenOrders;
 import org.knowm.xchange.dto.trade.StopOrder;
 import org.knowm.xchange.dto.trade.UserTrade;
@@ -64,6 +71,7 @@ import org.slf4j.LoggerFactory;
 public final class BitfinexAdapters {
 
   public static final Logger log = LoggerFactory.getLogger(BitfinexAdapters.class);
+  private static final ObjectMapper mapper = new ObjectMapper();
 
   private static final AtomicBoolean warnedStopLimit = new AtomicBoolean();
 
@@ -151,17 +159,18 @@ public final class BitfinexAdapters {
   }
 
   public static CurrencyPair adaptCurrencyPair(String bitfinexSymbol) {
-
     String tradableIdentifier;
     String transactionCurrency;
+    int startIndex =
+        bitfinexSymbol.startsWith("t") && Character.isUpperCase(bitfinexSymbol.charAt(1)) ? 1 : 0;
     if (bitfinexSymbol.contains(":")) {
-      // ie 'dusk:usd'
+      // ie 'dusk:usd' or 'btc:cnht'
       int idx = bitfinexSymbol.indexOf(":");
-      tradableIdentifier = bitfinexSymbol.substring(0, idx);
+      tradableIdentifier = bitfinexSymbol.substring(startIndex, idx);
       transactionCurrency = bitfinexSymbol.substring(idx + 1);
     } else {
-      tradableIdentifier = bitfinexSymbol.substring(0, 3);
-      transactionCurrency = bitfinexSymbol.substring(3);
+      tradableIdentifier = bitfinexSymbol.substring(startIndex, startIndex + 3);
+      transactionCurrency = bitfinexSymbol.substring(startIndex + 3);
     }
 
     return new CurrencyPair(
@@ -317,7 +326,14 @@ public final class BitfinexAdapters {
     Date date =
         DateUtils.fromMillisUtc(trade.getTimestamp() * 1000L); // Bitfinex uses Unix timestamps
     final String tradeId = String.valueOf(trade.getTradeId());
-    return new Trade(orderType, amount, currencyPair, price, date, tradeId);
+    return new Trade.Builder()
+        .type(orderType)
+        .originalAmount(amount)
+        .currencyPair(currencyPair)
+        .price(price)
+        .timestamp(date)
+        .id(tradeId)
+        .build();
   }
 
   public static Trades adaptTrades(BitfinexTrade[] trades, CurrencyPair currencyPair) {
@@ -396,7 +412,7 @@ public final class BitfinexAdapters {
         balances.add(
             new Balance(Currency.getInstance(currencyName), balanceTotal, balanceAvailable));
       }
-      wallets.add(new Wallet(walletData.getKey(), balances));
+      wallets.add(Wallet.Builder.from(balances).id(walletData.getKey()).build());
     }
 
     return wallets;
@@ -413,6 +429,19 @@ public final class BitfinexAdapters {
       OrderStatus status = adaptOrderStatus(order);
       CurrencyPair currencyPair = adaptCurrencyPair(order.getSymbol());
       Date timestamp = convertBigDecimalTimestampToDate(order.getTimestamp());
+
+      Supplier<MarketOrder> marketOrderCreator =
+          () ->
+              new MarketOrder(
+                  orderType,
+                  order.getOriginalAmount(),
+                  currencyPair,
+                  String.valueOf(order.getId()),
+                  timestamp,
+                  order.getAvgExecutionPrice(),
+                  order.getExecutedAmount(),
+                  null,
+                  status);
 
       Supplier<LimitOrder> limitOrderCreator =
           () ->
@@ -444,6 +473,7 @@ public final class BitfinexAdapters {
 
       LimitOrder limitOrder = null;
       StopOrder stopOrder = null;
+      MarketOrder marketOrder = null;
 
       Optional<BitfinexOrderType> bitfinexOrderType =
           Arrays.stream(BitfinexOrderType.values())
@@ -499,8 +529,7 @@ public final class BitfinexAdapters {
             break;
           case MARGIN_MARKET:
           case MARKET:
-            log.warn("Unexpected market order on book. Defaulting to limit order");
-            limitOrder = limitOrderCreator.get();
+            marketOrder = marketOrderCreator.get();
             break;
           default:
             log.warn(
@@ -517,6 +546,8 @@ public final class BitfinexAdapters {
         limitOrders.add(limitOrder);
       } else if (stopOrder != null) {
         hiddenOrders.add(stopOrder);
+      } else if (marketOrder != null) {
+        hiddenOrders.add(marketOrder);
       }
     }
 
@@ -542,16 +573,46 @@ public final class BitfinexAdapters {
       Date timestamp = convertBigDecimalTimestampToDate(trade.getTimestamp());
       final BigDecimal fee = trade.getFeeAmount() == null ? null : trade.getFeeAmount().negate();
       pastTrades.add(
-          new UserTrade(
-              orderType,
-              trade.getAmount(),
-              currencyPair,
-              trade.getPrice(),
-              timestamp,
-              trade.getTradeId(),
-              trade.getOrderId(),
-              fee,
-              Currency.getInstance(trade.getFeeCurrency())));
+          new UserTrade.Builder()
+              .type(orderType)
+              .originalAmount(trade.getAmount())
+              .currencyPair(currencyPair)
+              .price(trade.getPrice())
+              .timestamp(timestamp)
+              .id(trade.getTradeId())
+              .orderId(trade.getOrderId())
+              .feeAmount(fee)
+              .feeCurrency(Currency.getInstance(trade.getFeeCurrency()))
+              .build());
+    }
+
+    return new UserTrades(pastTrades, TradeSortType.SortByTimestamp);
+  }
+
+  public static UserTrades adaptTradeHistoryV2(
+      List<org.knowm.xchange.bitfinex.v2.dto.trade.Trade> trades) {
+
+    List<UserTrade> pastTrades = new ArrayList<>(trades.size());
+
+    for (org.knowm.xchange.bitfinex.v2.dto.trade.Trade trade : trades) {
+      OrderType orderType = trade.getExecAmount().signum() >= 0 ? OrderType.BID : OrderType.ASK;
+      BigDecimal amount =
+          trade.getExecAmount().signum() == -1
+              ? trade.getExecAmount().negate()
+              : trade.getExecAmount();
+      final BigDecimal fee = trade.getFee() != null ? trade.getFee().negate() : null;
+      pastTrades.add(
+          new UserTrade.Builder()
+              .type(orderType)
+              .originalAmount(amount)
+              .currencyPair(adaptCurrencyPair(trade.getSymbol()))
+              .price(trade.getExecPrice())
+              .timestamp(trade.getTimestamp())
+              .id(trade.getId())
+              .orderId(trade.getOrderId())
+              .feeAmount(fee)
+              .feeCurrency(Currency.getInstance(trade.getFeeCurrency()))
+              .build());
     }
 
     return new UserTrades(pastTrades, TradeSortType.SortByTimestamp);
@@ -790,7 +851,7 @@ public final class BitfinexAdapters {
     return currencyPairs == null || currencyPairs.isEmpty()
         ? "ALL"
         : currencyPairs.stream()
-            .map(currencyPair -> "t" + currencyPair.base + currencyPair.counter)
+            .map(BitfinexAdapters::adaptCurrencyPair)
             .collect(Collectors.joining(","));
   }
 
@@ -829,8 +890,14 @@ public final class BitfinexAdapters {
     BigDecimal price = trade.getPrice();
     Date date = DateUtils.fromMillisUtc(trade.getTimestamp());
     final String tradeId = String.valueOf(trade.getTradeId());
-    return new Trade(
-        orderType, amount == null ? null : amount.abs(), currencyPair, price, date, tradeId);
+    return new Trade.Builder()
+        .type(orderType)
+        .originalAmount(amount == null ? null : amount.abs())
+        .currencyPair(currencyPair)
+        .price(price)
+        .timestamp(date)
+        .id(tradeId)
+        .build();
   }
 
   public static Trades adaptPublicTrades(BitfinexPublicTrade[] trades, CurrencyPair currencyPair) {
@@ -845,5 +912,31 @@ public final class BitfinexAdapters {
       tradesList.add(adaptPublicTrade(trade, currencyPair));
     }
     return new Trades(tradesList, lastTradeId, TradeSortType.SortByID);
+  }
+
+  public static org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexTicker[] adoptBitfinexTickers(
+      List<ArrayNode> tickers) throws IOException {
+
+    return tickers.stream()
+        .map(
+            array -> {
+              // tBTCUSD -> traiding pair
+              // fUSD -> funding currency
+              try {
+                String symbol = array.get(0).asText();
+                switch (symbol.charAt(0)) {
+                  case 't':
+                    return mapper.treeToValue(array, BitfinexTickerTraidingPair.class);
+                  case 'f':
+                    return mapper.treeToValue(array, BitfinexTickerFundingCurrency.class);
+                  default:
+                    throw new RuntimeException(
+                        "Invalid symbol <" + symbol + ">, it must start with 't' or 'f'.");
+                }
+              } catch (JsonProcessingException e) {
+                throw new RuntimeException("Could not convert ticker.", e);
+              }
+            })
+        .toArray(org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexTicker[]::new);
   }
 }

@@ -1,7 +1,6 @@
 package org.knowm.xchange.binance.dto.account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Map;
 
 public class AssetDetailResponse {
@@ -10,8 +9,8 @@ public class AssetDetailResponse {
   private final Map<String, AssetDetail> assetDetail;
 
   public AssetDetailResponse(
-          @JsonProperty("success") boolean success,
-          @JsonProperty("assetDetail") Map<String, AssetDetail> assetDetail) {
+      @JsonProperty("success") boolean success,
+      @JsonProperty("assetDetail") Map<String, AssetDetail> assetDetail) {
     this.success = success;
     this.assetDetail = assetDetail;
   }
@@ -27,12 +26,12 @@ public class AssetDetailResponse {
   @Override
   public String toString() {
     return "AssetDetailResponse{"
-            + "success = '"
-            + success
-            + '\''
-            + ",assetDetail = '"
-            + assetDetail
-            + '\''
-            + "}";
+        + "success = '"
+        + success
+        + '\''
+        + ",assetDetail = '"
+        + assetDetail
+        + '\''
+        + "}";
   }
 }

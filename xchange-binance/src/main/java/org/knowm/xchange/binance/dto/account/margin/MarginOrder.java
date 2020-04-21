@@ -1,6 +1,11 @@
+//
+// Decompiled by Procyon v0.5.36
+//
+
 package org.knowm.xchange.binance.dto.account.margin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.math.BigDecimal;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.trade.OrderSide;
 import org.knowm.xchange.binance.dto.trade.OrderStatus;
@@ -8,10 +13,7 @@ import org.knowm.xchange.binance.dto.trade.OrderType;
 import org.knowm.xchange.binance.dto.trade.TimeInForce;
 import org.knowm.xchange.currency.CurrencyPair;
 
-import java.math.BigDecimal;
-
 public class MarginOrder {
-
   private String clientOrderId;
   private BigDecimal cummulativeQuoteQty;
   private BigDecimal executedQty;
@@ -31,23 +33,23 @@ public class MarginOrder {
   private Long updateTime;
 
   public MarginOrder(
-          @JsonProperty("clientOrderId") String clientOrderId,
-          @JsonProperty("cummulativeQuoteQty") BigDecimal cummulativeQuoteQty,
-          @JsonProperty("executedQty") BigDecimal executedQty,
-          @JsonProperty("icebergQty") BigDecimal icebergQty,
-          @JsonProperty("isWorking") Boolean isWorking,
-          @JsonProperty("orderId") Long orderId,
-          @JsonProperty("origQty") BigDecimal origQty,
-          @JsonProperty("price") BigDecimal price,
-          @JsonProperty("side") String side,
-          @JsonProperty("status") String status,
-          @JsonProperty("stopPrice") BigDecimal stopPrice,
-          @JsonProperty("symbol") String symbol,
-          @JsonProperty("time") Long time,
-          @JsonProperty("transactTime") Long transactTime,
-          @JsonProperty("timeInForce") String timeInForce,
-          @JsonProperty("type") String type,
-          @JsonProperty("updateTime") Long updateTime) {
+      @JsonProperty("clientOrderId") final String clientOrderId,
+      @JsonProperty("cummulativeQuoteQty") final BigDecimal cummulativeQuoteQty,
+      @JsonProperty("executedQty") final BigDecimal executedQty,
+      @JsonProperty("icebergQty") final BigDecimal icebergQty,
+      @JsonProperty("isWorking") final Boolean isWorking,
+      @JsonProperty("orderId") final Long orderId,
+      @JsonProperty("origQty") final BigDecimal origQty,
+      @JsonProperty("price") final BigDecimal price,
+      @JsonProperty("side") final String side,
+      @JsonProperty("status") final String status,
+      @JsonProperty("stopPrice") final BigDecimal stopPrice,
+      @JsonProperty("symbol") final String symbol,
+      @JsonProperty("time") final Long time,
+      @JsonProperty("transactTime") final Long transactTime,
+      @JsonProperty("timeInForce") final String timeInForce,
+      @JsonProperty("type") final String type,
+      @JsonProperty("updateTime") final Long updateTime) {
     this.clientOrderId = clientOrderId;
     this.cummulativeQuoteQty = cummulativeQuoteQty;
     this.executedQty = executedQty;
@@ -68,138 +70,138 @@ public class MarginOrder {
   }
 
   public String getClientOrderId() {
-    return clientOrderId;
+    return this.clientOrderId;
   }
 
-  public void setClientOrderId(String clientOrderId) {
+  public void setClientOrderId(final String clientOrderId) {
     this.clientOrderId = clientOrderId;
   }
 
   public BigDecimal getCummulativeQuoteQty() {
-    return cummulativeQuoteQty;
+    return this.cummulativeQuoteQty;
   }
 
-  public void setCummulativeQuoteQty(BigDecimal cummulativeQuoteQty) {
+  public void setCummulativeQuoteQty(final BigDecimal cummulativeQuoteQty) {
     this.cummulativeQuoteQty = cummulativeQuoteQty;
   }
 
   public BigDecimal getExecutedQty() {
-    return executedQty;
+    return this.executedQty;
   }
 
-  public void setExecutedQty(BigDecimal executedQty) {
+  public void setExecutedQty(final BigDecimal executedQty) {
     this.executedQty = executedQty;
   }
 
   public BigDecimal getIcebergQty() {
-    return icebergQty;
+    return this.icebergQty;
   }
 
-  public void setIcebergQty(BigDecimal icebergQty) {
+  public void setIcebergQty(final BigDecimal icebergQty) {
     this.icebergQty = icebergQty;
   }
 
   public Boolean getWorking() {
-    return isWorking;
+    return this.isWorking;
   }
 
-  public void setWorking(Boolean working) {
-    isWorking = working;
+  public void setWorking(final Boolean working) {
+    this.isWorking = working;
   }
 
   public Long getOrderId() {
-    return orderId;
+    return this.orderId;
   }
 
-  public void setOrderId(Long orderId) {
+  public void setOrderId(final Long orderId) {
     this.orderId = orderId;
   }
 
   public BigDecimal getOrigQty() {
-    return origQty;
+    return this.origQty;
   }
 
-  public void setOrigQty(BigDecimal origQty) {
+  public void setOrigQty(final BigDecimal origQty) {
     this.origQty = origQty;
   }
 
   public BigDecimal getPrice() {
-    return price;
+    return this.price;
   }
 
-  public void setPrice(BigDecimal price) {
+  public void setPrice(final BigDecimal price) {
     this.price = price;
   }
 
   public OrderSide getSide() {
-    return side;
+    return this.side;
   }
 
-  public void setSide(OrderSide side) {
+  public void setSide(final OrderSide side) {
     this.side = side;
   }
 
   public Long getTransactTime() {
-    return transactTime;
+    return this.transactTime;
   }
 
-  public void setTransactTime(Long transactTime) {
+  public void setTransactTime(final Long transactTime) {
     this.transactTime = transactTime;
   }
 
   public OrderStatus getStatus() {
-    return status;
+    return this.status;
   }
 
-  public void setStatus(OrderStatus status) {
+  public void setStatus(final OrderStatus status) {
     this.status = status;
   }
 
   public BigDecimal getStopPrice() {
-    return stopPrice;
+    return this.stopPrice;
   }
 
-  public void setStopPrice(BigDecimal stopPrice) {
+  public void setStopPrice(final BigDecimal stopPrice) {
     this.stopPrice = stopPrice;
   }
 
   public CurrencyPair getSymbol() {
-    return symbol;
+    return this.symbol;
   }
 
-  public void setSymbol(CurrencyPair symbol) {
+  public void setSymbol(final CurrencyPair symbol) {
     this.symbol = symbol;
   }
 
   public Long getTime() {
-    return time;
+    return this.time;
   }
 
-  public void setTime(Long time) {
+  public void setTime(final Long time) {
     this.time = time;
   }
 
   public TimeInForce getTimeInForce() {
-    return timeInForce;
+    return this.timeInForce;
   }
 
-  public void setTimeInForce(TimeInForce timeInForce) {
+  public void setTimeInForce(final TimeInForce timeInForce) {
     this.timeInForce = timeInForce;
   }
 
   public OrderType getType() {
-    return type;
+    return this.type;
   }
 
-  public void setType(OrderType type) {
+  public void setType(final OrderType type) {
     this.type = type;
   }
 
   public Long getUpdateTime() {
-    return updateTime;
+    return this.updateTime;
   }
 
-  public void setUpdateTime(Long updateTime) {
+  public void setUpdateTime(final Long updateTime) {
     this.updateTime = updateTime;
   }
 }

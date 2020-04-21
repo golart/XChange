@@ -1,5 +1,8 @@
 package org.knowm.xchange.exmo.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -10,26 +13,19 @@ import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.exmo.holder.ExmoMarketDataHolder;
 import org.knowm.xchange.utils.DateUtils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 public class ExmoAdapters {
   public static UserTrade adaptTrade(Map<String, String> tradeDatum, CurrencyPair currencyPair) {
     Order.OrderType type = adaptOrderType(tradeDatum);
     BigDecimal amount = new BigDecimal(tradeDatum.get("quantity"));
     BigDecimal price = new BigDecimal(tradeDatum.get("price"));
-    Date date = DateUtils.fromUnixTime(Long.valueOf(tradeDatum.get("date")));
+    Date date = DateUtils.fromUnixTime(Long.parseLong(tradeDatum.get("date")));
     String tradeId = tradeDatum.get("trade_id");
     String orderId = tradeDatum.get("order_id");
     BigDecimal feeAmount = new BigDecimal(tradeDatum.get("commission_amount"));
     Currency feeCurrency = Currency.getInstance(tradeDatum.get("commission_currency"));
 
     return new UserTrade(
-            type, amount, currencyPair, price, date, tradeId, orderId, feeAmount, feeCurrency);
+        type, amount, currencyPair, price, date, tradeId, orderId, feeAmount, feeCurrency, null);
   }
 
   public static Order.OrderType adaptOrderType(Map<String, String> order) {
@@ -47,14 +43,21 @@ public class ExmoAdapters {
 
   public static List<LimitOrder> adaptOrders(
       CurrencyPair currencyPair, Map<String, Object> orderBookData, Order.OrderType type) {
-    List<LimitOrder> orders = new ArrayList<>();
-    for (List<String> orderData :
-        (List<List<String>>) orderBookData.get(type.equals(Order.OrderType.ASK) ? "ask" : "bid")) {
+    if (orderBookData == null) {
+      return Collections.EMPTY_LIST;
+    }
+    List<List<String>> orders =
+        (List<List<String>>) orderBookData.get(type.equals(Order.OrderType.ASK) ? "ask" : "bid");
+    if (orders == null) {
+      return Collections.EMPTY_LIST;
+    }
+    List<LimitOrder> result = new ArrayList<>();
+    for (List<String> orderData : orders) {
       BigDecimal price = new BigDecimal(orderData.get(0));
       BigDecimal quantity = new BigDecimal(orderData.get(1));
-      orders.add(new LimitOrder(type, quantity, currencyPair, null, null, price));
+      result.add(new LimitOrder(type, quantity, currencyPair, null, null, price));
     }
-    return orders;
+    return result;
   }
 
   public static Ticker adaptTicker(CurrencyPair currencyPair, Map<String, String> data) {
@@ -83,6 +86,7 @@ public class ExmoAdapters {
         .priceChange(priceChange)
         .low(new BigDecimal(data.get("low")))
         .volume(new BigDecimal(data.get("vol")))
+        .timestamp(DateUtils.fromMillisUtc(Long.parseLong(data.get("updated"))))
         .quoteVolume(new BigDecimal(data.get("vol_curr")))
         .timestamp(DateUtils.fromMillisUtc(Long.valueOf(data.get("updated"))))
         .build();

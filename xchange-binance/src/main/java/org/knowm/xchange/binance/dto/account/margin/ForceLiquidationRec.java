@@ -1,15 +1,17 @@
+//
+// Decompiled by Procyon v0.5.36
+//
+
 package org.knowm.xchange.binance.dto.account.margin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.math.BigDecimal;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.trade.OrderSide;
 import org.knowm.xchange.binance.dto.trade.TimeInForce;
 import org.knowm.xchange.currency.CurrencyPair;
 
-import java.math.BigDecimal;
-
 public class ForceLiquidationRec {
-
   private BigDecimal avgPrice;
   private BigDecimal executedQty;
   private Long orderId;
@@ -21,15 +23,15 @@ public class ForceLiquidationRec {
   private Long updatedTime;
 
   public ForceLiquidationRec(
-          @JsonProperty("avgPrice") BigDecimal avgPrice,
-          @JsonProperty("executedQty") BigDecimal executedQty,
-          @JsonProperty("orderId") Long orderId,
-          @JsonProperty("price") BigDecimal price,
-          @JsonProperty("qty") BigDecimal qty,
-          @JsonProperty("side") String side,
-          @JsonProperty("symbol") String symbol,
-          @JsonProperty("timeInForce") String timeInForce,
-          @JsonProperty("updatedTime") Long updatedTime) {
+      @JsonProperty("avgPrice") final BigDecimal avgPrice,
+      @JsonProperty("executedQty") final BigDecimal executedQty,
+      @JsonProperty("orderId") final Long orderId,
+      @JsonProperty("price") final BigDecimal price,
+      @JsonProperty("qty") final BigDecimal qty,
+      @JsonProperty("side") final String side,
+      @JsonProperty("symbol") final String symbol,
+      @JsonProperty("timeInForce") final String timeInForce,
+      @JsonProperty("updatedTime") final Long updatedTime) {
     this.avgPrice = avgPrice;
     this.executedQty = executedQty;
     this.orderId = orderId;
@@ -42,74 +44,74 @@ public class ForceLiquidationRec {
   }
 
   public BigDecimal getAvgPrice() {
-    return avgPrice;
+    return this.avgPrice;
   }
 
-  public void setAvgPrice(BigDecimal avgPrice) {
+  public void setAvgPrice(final BigDecimal avgPrice) {
     this.avgPrice = avgPrice;
   }
 
   public BigDecimal getExecutedQty() {
-    return executedQty;
+    return this.executedQty;
   }
 
-  public void setExecutedQty(BigDecimal executedQty) {
+  public void setExecutedQty(final BigDecimal executedQty) {
     this.executedQty = executedQty;
   }
 
   public Long getOrderId() {
-    return orderId;
+    return this.orderId;
   }
 
-  public void setOrderId(Long orderId) {
+  public void setOrderId(final Long orderId) {
     this.orderId = orderId;
   }
 
   public BigDecimal getPrice() {
-    return price;
+    return this.price;
   }
 
-  public void setPrice(BigDecimal price) {
+  public void setPrice(final BigDecimal price) {
     this.price = price;
   }
 
   public BigDecimal getQty() {
-    return qty;
+    return this.qty;
   }
 
-  public void setQty(BigDecimal qty) {
+  public void setQty(final BigDecimal qty) {
     this.qty = qty;
   }
 
   public OrderSide getSide() {
-    return side;
+    return this.side;
   }
 
-  public void setSide(OrderSide side) {
+  public void setSide(final OrderSide side) {
     this.side = side;
   }
 
   public CurrencyPair getSymbol() {
-    return symbol;
+    return this.symbol;
   }
 
-  public void setSymbol(CurrencyPair symbol) {
+  public void setSymbol(final CurrencyPair symbol) {
     this.symbol = symbol;
   }
 
   public TimeInForce getTimeInForce() {
-    return timeInForce;
+    return this.timeInForce;
   }
 
-  public void setTimeInForce(TimeInForce timeInForce) {
+  public void setTimeInForce(final TimeInForce timeInForce) {
     this.timeInForce = timeInForce;
   }
 
   public Long getUpdatedTime() {
-    return updatedTime;
+    return this.updatedTime;
   }
 
-  public void setUpdatedTime(Long updatedTime) {
+  public void setUpdatedTime(final Long updatedTime) {
     this.updatedTime = updatedTime;
   }
 }

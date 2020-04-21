@@ -1,10 +1,11 @@
 ## LGO 
 
-Supports LGO API and authentication. 
+Supports LGO HTTP API and authentication. 
 
-For now, only metadata, auth, trade history and order signature are supported, because the web socket should be favored for any trading activity (lowest possible latency).
+For now, only metadata, auth, trade history, order book, order signature and placing orders/cancelling orders are supported. 
+The web socket API should be favored (lowest possible latency).
 
-For web socket support, see [xchange-stream](https://github.com/bitrich-info/xchange-stream)
+For web socket support, see [xchange-stream](https://github.com/lgo-public/xchange-stream)
 
 ### Documentation
 
@@ -16,6 +17,10 @@ For web socket support, see [xchange-stream](https://github.com/bitrich-info/xch
 
 LGO authenticates request using an api key, and a RSA key/pair.
 This library supports several strategy do deal with that. 
+
+You can choose between the two methods by setting the `LgoEnv.SIGNATURE_SERVICE` specific parameter to `SignatureService.PASSTHROUGHS` or `SignatureService.LOCAL_RSA`.
+`LOCAL_RSA` is assumed by default. 
+
 
 #### PASSTHROUGHS
 
@@ -31,7 +36,7 @@ Your proxy could then fetch the real key given this identifier, and do the autho
 
 This strategy uses directly your secrets to apply authentication. Bet very careful about how you store and secure your secrets.
 
-
+You should configure `ExchangeSpecification` by setting `setApiKey` with your accessKey, and `setApiSecret` with your private key in PKCS8 format.
 
 ##### How to generate a proper private key for real usage or integration tests
  
@@ -51,7 +56,10 @@ For integration tests, an integration directory should exist into src/test/resou
 * `api_key.txt` : a file containing your api key in plain text
 * `private_key.pem` : the private key in PKCS8 pem format generated earlier
 
+### Order encryption
 
-#### PKCS11 / KEYCHAIN / Other
+LGO includes an optional front-running protection. More informations are available [here](https://lgono.de/) 
+In practice, to prevent front-running, you can encrypt your orders with a key LGO doesn't know, and your order will be unencrypted only after LGO made several proofs that it won't 
+insert orders before yours. 
 
-SOON
+This behavior is controlled by the specific parameter `LgoEnv.SHOULD_ENCRYPT_ORDERS`, that can be set to `true` or `false`.  

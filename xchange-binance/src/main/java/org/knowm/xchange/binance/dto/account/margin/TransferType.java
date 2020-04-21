@@ -1,3 +1,7 @@
+//
+// Decompiled by Procyon v0.5.36
+//
+
 package org.knowm.xchange.binance.dto.account.margin;
 
 public enum TransferType {
@@ -6,11 +10,11 @@ public enum TransferType {
 
   private final int code;
 
-  TransferType(int code) {
+  private TransferType(final int code) {
     this.code = code;
   }
 
   public int getCode() {
-    return code;
+    return this.code;
   }
 }

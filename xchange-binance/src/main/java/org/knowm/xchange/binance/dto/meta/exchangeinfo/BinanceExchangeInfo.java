@@ -1,7 +1,6 @@
 package org.knowm.xchange.binance.dto.meta.exchangeinfo;
 
 public class BinanceExchangeInfo {
-
   private String timezone;
 
   private Symbol[] symbols;
@@ -55,15 +54,15 @@ public class BinanceExchangeInfo {
   @Override
   public String toString() {
     return "ClassPojo [timezone = "
-            + timezone
-            + ", symbols = "
-            + symbols
-            + ", serverTime = "
-            + serverTime
-            + ", rateLimits = "
-            + rateLimits
-            + ", exchangeFilters = "
-            + exchangeFilters
-            + "]";
+        + timezone
+        + ", symbols = "
+        + symbols
+        + ", serverTime = "
+        + serverTime
+        + ", rateLimits = "
+        + rateLimits
+        + ", exchangeFilters = "
+        + exchangeFilters
+        + "]";
   }
 }

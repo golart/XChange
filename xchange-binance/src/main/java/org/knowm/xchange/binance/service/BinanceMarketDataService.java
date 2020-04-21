@@ -1,5 +1,9 @@
 package org.knowm.xchange.binance.service;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
@@ -20,29 +24,12 @@ import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.knowm.xchange.service.marketdata.params.Params;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 public class BinanceMarketDataService extends BinanceMarketDataServiceRaw
-        implements MarketDataService {
+    implements MarketDataService {
 
   public BinanceMarketDataService(Exchange exchange) {
 
     super(exchange);
-  }
-
-  public static OrderBook convertOrderBook(BinanceOrderbook ob, CurrencyPair pair) {
-    List<LimitOrder> bids =
-            ob.bids.entrySet().stream()
-                    .map(e -> new LimitOrder(OrderType.BID, e.getValue(), pair, null, null, e.getKey()))
-                    .collect(Collectors.toList());
-    List<LimitOrder> asks =
-            ob.asks.entrySet().stream()
-                    .map(e -> new LimitOrder(OrderType.ASK, e.getValue(), pair, null, null, e.getKey()))
-                    .collect(Collectors.toList());
-    return new OrderBook(null, asks, bids);
   }
 
   @Override
@@ -63,6 +50,18 @@ public class BinanceMarketDataService extends BinanceMarketDataServiceRaw
     } catch (BinanceException e) {
       throw BinanceErrorAdapter.adapt(e);
     }
+  }
+
+  public static OrderBook convertOrderBook(BinanceOrderbook ob, CurrencyPair pair) {
+    List<LimitOrder> bids =
+        ob.bids.entrySet().stream()
+            .map(e -> new LimitOrder(OrderType.BID, e.getValue(), pair, null, null, e.getKey()))
+            .collect(Collectors.toList());
+    List<LimitOrder> asks =
+        ob.asks.entrySet().stream()
+            .map(e -> new LimitOrder(OrderType.ASK, e.getValue(), pair, null, null, e.getKey()))
+            .collect(Collectors.toList());
+    return new OrderBook(null, asks, bids);
   }
 
   @Override
@@ -103,19 +102,20 @@ public class BinanceMarketDataService extends BinanceMarketDataServiceRaw
       Long endTime = tradesArgument(args, 2, Long::valueOf);
       Integer limit = tradesArgument(args, 3, Integer::valueOf);
       List<BinanceAggTrades> aggTrades =
-              binance.aggTrades(BinanceAdapters.toSymbol(pair), fromId, startTime, endTime, limit);
+          binance.aggTrades(BinanceAdapters.toSymbol(pair), fromId, startTime, endTime, limit);
       List<Trade> trades =
-              aggTrades.stream()
-                      .map(
-                              at ->
-                                      new Trade(
-                                              BinanceAdapters.convertType(at.buyerMaker),
-                                              at.quantity,
-                                              pair,
-                                              at.price,
-                                              at.getTimestamp(),
-                                              Long.toString(at.aggregateTradeId)))
-                      .collect(Collectors.toList());
+          aggTrades.stream()
+              .map(
+                  at ->
+                      new Trade.Builder()
+                          .type(BinanceAdapters.convertType(at.buyerMaker))
+                          .originalAmount(at.quantity)
+                          .currencyPair(pair)
+                          .price(at.price)
+                          .timestamp(at.getTimestamp())
+                          .id(Long.toString(at.aggregateTradeId))
+                          .build())
+              .collect(Collectors.toList());
       return new Trades(trades, TradeSortType.SortByTimestamp);
     } catch (BinanceException e) {
       throw BinanceErrorAdapter.adapt(e);
@@ -123,7 +123,7 @@ public class BinanceMarketDataService extends BinanceMarketDataServiceRaw
   }
 
   private <T extends Number> T tradesArgument(
-          Object[] args, int index, Function<String, T> converter) {
+      Object[] args, int index, Function<String, T> converter) {
     if (index >= args.length) {
       return null;
     }
@@ -136,7 +136,7 @@ public class BinanceMarketDataService extends BinanceMarketDataServiceRaw
       return converter.apply(argStr);
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException(
-              "Argument on index " + index + " is not a number: " + argStr, e);
+          "Argument on index " + index + " is not a number: " + argStr, e);
     }
   }
 

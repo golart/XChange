@@ -1,15 +1,14 @@
 package org.knowm.xchange.binance.service;
 
+import java.util.Date;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.dto.account.FundingRecord.Type;
 import org.knowm.xchange.service.trade.params.HistoryParamsFundingType;
 import org.knowm.xchange.service.trade.params.TradeHistoryParamCurrency;
 import org.knowm.xchange.service.trade.params.TradeHistoryParamsTimeSpan;
 
-import java.util.Date;
-
 public class BinanceFundingHistoryParams
-        implements TradeHistoryParamCurrency, TradeHistoryParamsTimeSpan, HistoryParamsFundingType {
+    implements TradeHistoryParamCurrency, TradeHistoryParamsTimeSpan, HistoryParamsFundingType {
 
   private Currency currency;
   private Type type;

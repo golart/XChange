@@ -1,13 +1,9 @@
 package org.knowm.xchange.binance.dto.trade;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.knowm.xchange.binance.BinanceAdapters;
-import org.knowm.xchange.dto.trade.LimitOrder;
-
 import java.math.BigDecimal;
-import java.util.Date;
 
-public final class BinanceNewOrder extends LimitOrder {
+public final class BinanceNewOrder {
 
   public final String symbol;
   public final long orderId;
@@ -16,30 +12,38 @@ public final class BinanceNewOrder extends LimitOrder {
   public final BigDecimal price;
   public final BigDecimal origQty;
   public final BigDecimal executedQty;
-  public final BinanceOrderStatus bStatus;
+  public final OrderStatus status;
   public final TimeInForce timeInForce;
-  public final BinanceOrderType bType;
+  public final OrderType type;
   public final OrderSide side;
+  public final BigDecimal stopPrice;
+  public final BigDecimal cumQuote;
+  public final BigDecimal activatePrice;
+  public final boolean reduceOnly;
+  public final BigDecimal priceRate;
+  public final long updateTime;
+  public final WorkingType workingType;
 
   public BinanceNewOrder(
-          @JsonProperty("symbol") String symbol,
-          @JsonProperty("orderId") long orderId,
-          @JsonProperty("clientOrderId") String clientOrderId,
-          @JsonProperty("transactTime") long transactTime,
-          @JsonProperty("price") BigDecimal price,
-          @JsonProperty("origQty") BigDecimal origQty,
-          @JsonProperty("executedQty") BigDecimal executedQty,
-          @JsonProperty("status") BinanceOrderStatus status,
-          @JsonProperty("timeInForce") TimeInForce timeInForce,
-          @JsonProperty("type") BinanceOrderType type,
-          @JsonProperty("side") OrderSide side) {
-    super(
-            BinanceAdapters.convert(side),
-            origQty,
-            BinanceAdapters.adaptSymbol(symbol),
-            Long.toString(orderId),
-            new Date(transactTime),
-            price);
+      @JsonProperty("symbol") String symbol,
+      @JsonProperty("orderId") long orderId,
+      @JsonProperty("clientOrderId") String clientOrderId,
+      @JsonProperty("transactTime") long transactTime,
+      @JsonProperty("price") BigDecimal price,
+      @JsonProperty("origQty") BigDecimal origQty,
+      @JsonProperty("executedQty") BigDecimal executedQty,
+      @JsonProperty("status") OrderStatus status,
+      @JsonProperty("timeInForce") TimeInForce timeInForce,
+      @JsonProperty("type") OrderType type,
+      @JsonProperty("side") OrderSide side,
+      @JsonProperty("stopPrice") BigDecimal stopPrice,
+      @JsonProperty("cumQuote") BigDecimal cumQuote,
+      @JsonProperty("activatePrice") BigDecimal activatePrice,
+      @JsonProperty("priceRate") BigDecimal priceRate,
+      @JsonProperty("updateTime") long updateTime,
+      @JsonProperty("workingType") WorkingType workingType,
+      @JsonProperty("reduceOnly") boolean reduceOnly) {
+    super();
     this.symbol = symbol;
     this.orderId = orderId;
     this.clientOrderId = clientOrderId;
@@ -47,9 +51,16 @@ public final class BinanceNewOrder extends LimitOrder {
     this.price = price;
     this.origQty = origQty;
     this.executedQty = executedQty;
-    this.bStatus = status;
+    this.status = status;
     this.timeInForce = timeInForce;
-    this.bType = type;
+    this.type = type;
     this.side = side;
+    this.workingType = workingType;
+    this.reduceOnly = reduceOnly;
+    this.updateTime = updateTime;
+    this.priceRate = priceRate;
+    this.activatePrice = activatePrice;
+    this.cumQuote = cumQuote;
+    this.stopPrice = stopPrice;
   }
 }

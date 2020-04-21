@@ -1,5 +1,6 @@
 package org.knowm.xchange.lgo.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -38,13 +39,13 @@ public class LgoTradeServiceTest {
     ExchangeMetaData metaData = load("/lgo.json", ExchangeMetaData.class);
     when(exchange.getProducts()).thenReturn(products);
     when(exchange.getCurrencies()).thenReturn(currencies);
-    when(exchange.getExchangeSpecification()).thenReturn(LgoEnv.sandboxMarkets());
+    when(exchange.getExchangeSpecification()).thenReturn(LgoEnv.sandbox());
     when(exchange.getExchangeMetaData())
         .thenReturn(LgoAdapters.adaptMetadata(metaData, products, currencies));
-    tradeService = new LgoTradeService(exchange);
+    tradeService = new LgoTradeService(exchange, mock(LgoKeyService.class));
   }
 
-  protected <T> T load(String resource, Class<T> clazz) throws java.io.IOException {
+  private <T> T load(String resource, Class<T> clazz) throws java.io.IOException {
     InputStream is = LgoProductsTest.class.getResourceAsStream(resource);
     ObjectMapper mapper = new ObjectMapper();
 
@@ -71,7 +72,6 @@ public class LgoTradeServiceTest {
 
   @Test
   public void cannotPlaceLimitOrderWithToLowBaseAmount() {
-
     ThrowingCallable check =
         () ->
             tradeService.verifyOrder(
@@ -157,7 +157,21 @@ public class LgoTradeServiceTest {
 
     assertThatThrownBy(check)
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Invalid price increment");
+        .hasMessage("Unsupported price scale 2");
+  }
+
+  @Test
+  public void canPlaceLimitOrderWithValidPriceIncrementAndScaleGreaterThan0() {
+    tradeService.verifyOrder(
+        new LimitOrder(
+            OrderType.ASK,
+            new BigDecimal("10"),
+            CurrencyPair.BTC_USD,
+            "",
+            new Date(),
+            new BigDecimal("100.1")));
+
+    assertThat(true).describedAs("No exception thrown").isTrue();
   }
 
   @Test

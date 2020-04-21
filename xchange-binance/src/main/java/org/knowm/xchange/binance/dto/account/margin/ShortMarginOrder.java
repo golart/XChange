@@ -1,13 +1,15 @@
+//
+// Decompiled by Procyon v0.5.36
+//
+
 package org.knowm.xchange.binance.dto.account.margin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.math.BigDecimal;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.currency.CurrencyPair;
 
-import java.math.BigDecimal;
-
 public class ShortMarginOrder {
-
   private Long id;
   private BigDecimal price;
   private BigDecimal qty;
@@ -16,12 +18,12 @@ public class ShortMarginOrder {
   private Long time;
 
   public ShortMarginOrder(
-          @JsonProperty("id") Long id,
-          @JsonProperty("price") BigDecimal price,
-          @JsonProperty("qty") BigDecimal qty,
-          @JsonProperty("quoteQty") BigDecimal quoteQty,
-          @JsonProperty("symbol") String symbol,
-          @JsonProperty("time") Long time) {
+      @JsonProperty("id") final Long id,
+      @JsonProperty("price") final BigDecimal price,
+      @JsonProperty("qty") final BigDecimal qty,
+      @JsonProperty("quoteQty") final BigDecimal quoteQty,
+      @JsonProperty("symbol") final String symbol,
+      @JsonProperty("time") final Long time) {
     this.id = id;
     this.price = price;
     this.qty = qty;
@@ -31,50 +33,50 @@ public class ShortMarginOrder {
   }
 
   public Long getId() {
-    return id;
+    return this.id;
   }
 
-  public void setId(Long id) {
+  public void setId(final Long id) {
     this.id = id;
   }
 
   public BigDecimal getPrice() {
-    return price;
+    return this.price;
   }
 
-  public void setPrice(BigDecimal price) {
+  public void setPrice(final BigDecimal price) {
     this.price = price;
   }
 
   public BigDecimal getQty() {
-    return qty;
+    return this.qty;
   }
 
-  public void setQty(BigDecimal qty) {
+  public void setQty(final BigDecimal qty) {
     this.qty = qty;
   }
 
   public BigDecimal getQuoteQty() {
-    return quoteQty;
+    return this.quoteQty;
   }
 
-  public void setQuoteQty(BigDecimal quoteQty) {
+  public void setQuoteQty(final BigDecimal quoteQty) {
     this.quoteQty = quoteQty;
   }
 
   public CurrencyPair getSymbol() {
-    return symbol;
+    return this.symbol;
   }
 
-  public void setSymbol(CurrencyPair symbol) {
+  public void setSymbol(final CurrencyPair symbol) {
     this.symbol = symbol;
   }
 
   public Long getTime() {
-    return time;
+    return this.time;
   }
 
-  public void setTime(Long time) {
+  public void setTime(final Long time) {
     this.time = time;
   }
 }

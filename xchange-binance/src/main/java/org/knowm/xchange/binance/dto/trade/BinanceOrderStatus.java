@@ -1,3 +1,7 @@
+//
+// Decompiled by Procyon v0.5.36
+//
+
 package org.knowm.xchange.binance.dto.trade;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -12,9 +16,9 @@ public enum BinanceOrderStatus {
   EXPIRED;
 
   @JsonCreator
-  public static BinanceOrderStatus getOrderStatus(String s) {
+  public static BinanceOrderStatus getOrderStatus(final String s) {
     try {
-      return BinanceOrderStatus.valueOf(s);
+      return valueOf(s);
     } catch (Exception e) {
       throw new RuntimeException("Unknown order status " + s + ".");
     }

@@ -1,5 +1,6 @@
 package org.knowm.xchange.bitfinex.service;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import org.knowm.xchange.bitfinex.v1.dto.marketdata.BitfinexTicker;
 import org.knowm.xchange.bitfinex.v1.dto.marketdata.BitfinexTrade;
 import org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexPublicFundingTrade;
 import org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexPublicTrade;
+import org.knowm.xchange.bitfinex.v2.dto.marketdata.Status;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import si.mazi.rescu.HttpStatusIOException;
@@ -91,15 +93,19 @@ public class BitfinexMarketDataServiceRaw extends BitfinexBaseService {
 
   public org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexTicker[] getBitfinexTickers(
       Collection<CurrencyPair> currencyPairs) throws IOException {
-    return bitfinexV2.getTickers(BitfinexAdapters.adaptCurrencyPairsToTickersParam(currencyPairs));
+    List<ArrayNode> tickers =
+        bitfinexV2.getTickers(BitfinexAdapters.adaptCurrencyPairsToTickersParam(currencyPairs));
+    return BitfinexAdapters.adoptBitfinexTickers(tickers);
   }
 
   public org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexTicker getBitfinexTickerV2(
       CurrencyPair currencyPair) throws IOException {
-    org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexTicker[] ticker =
+    List<ArrayNode> tickers =
         bitfinexV2.getTickers(
             BitfinexAdapters.adaptCurrencyPairsToTickersParam(
                 Collections.singletonList(currencyPair)));
+    org.knowm.xchange.bitfinex.v2.dto.marketdata.BitfinexTicker[] ticker =
+        BitfinexAdapters.adoptBitfinexTickers(tickers);
     if (ticker.length == 0) {
       throw new BitfinexException("Unknown Symbol");
     } else {
@@ -112,7 +118,7 @@ public class BitfinexMarketDataServiceRaw extends BitfinexBaseService {
       throws IOException {
     try {
       return bitfinexV2.getPublicTrades(
-          "t" + currencyPair.base.toString() + currencyPair.counter.toString(),
+          BitfinexAdapters.adaptCurrencyPair(currencyPair),
           limitTrades,
           startTimestamp,
           endTimestamp,
@@ -128,6 +134,15 @@ public class BitfinexMarketDataServiceRaw extends BitfinexBaseService {
     try {
       return bitfinexV2.getPublicFundingTrades(
           "f" + currency.toString(), limitTrades, startTimestamp, endTimestamp, sort);
+    } catch (HttpStatusIOException e) {
+      throw new BitfinexException(e.getHttpBody());
+    }
+  }
+
+  public List<Status> getStatus(List<CurrencyPair> pairs) throws IOException {
+    try {
+      return bitfinexV2.getStatus(
+          "deriv", BitfinexAdapters.adaptCurrencyPairsToTickersParam(pairs));
     } catch (HttpStatusIOException e) {
       throw new BitfinexException(e.getHttpBody());
     }

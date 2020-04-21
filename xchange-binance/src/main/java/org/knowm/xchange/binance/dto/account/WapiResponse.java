@@ -4,7 +4,7 @@ public abstract class WapiResponse<T> {
 
   public final boolean success;
   public final String
-          msg; // "{\"code\":-1021,\"msg\":\"Timestamp for this request is not valid.\"}"
+      msg; // "{\"code\":-1021,\"msg\":\"Timestamp for this request is not valid.\"}"
 
   public WapiResponse(boolean success, String msg) {
     super();

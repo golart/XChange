@@ -1,17 +1,20 @@
 package org.knowm.xchange.binance;
 
-import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.marketdata.*;
-import org.knowm.xchange.binance.dto.meta.BinanceTime;
-import org.knowm.xchange.binance.dto.meta.exchangeinfo.BinanceExchangeInfo;
-
+import java.io.IOException;
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.List;
+import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.marketdata.BinanceAggTrades;
+import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
+import org.knowm.xchange.binance.dto.marketdata.BinancePrice;
+import org.knowm.xchange.binance.dto.marketdata.BinancePriceQuantity;
+import org.knowm.xchange.binance.dto.marketdata.BinanceTicker24h;
+import org.knowm.xchange.binance.dto.meta.BinanceTime;
+import org.knowm.xchange.binance.dto.meta.exchangeinfo.BinanceExchangeInfo;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
@@ -57,7 +60,7 @@ public interface Binance {
    * @throws BinanceException
    */
   BinanceOrderbook depth(@QueryParam("symbol") String symbol, @QueryParam("limit") Integer limit)
-          throws IOException, BinanceException;
+      throws IOException, BinanceException;
 
   @GET
   @Path("api/v1/aggTrades")
@@ -79,12 +82,12 @@ public interface Binance {
    * @throws BinanceException
    */
   List<BinanceAggTrades> aggTrades(
-          @QueryParam("symbol") String symbol,
-          @QueryParam("fromId") Long fromId,
-          @QueryParam("startTime") Long startTime,
-          @QueryParam("endTime") Long endTime,
-          @QueryParam("limit") Integer limit)
-          throws IOException, BinanceException;
+      @QueryParam("symbol") String symbol,
+      @QueryParam("fromId") Long fromId,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("limit") Integer limit)
+      throws IOException, BinanceException;
 
   @GET
   @Path("api/v1/klines")
@@ -102,12 +105,12 @@ public interface Binance {
    * @throws BinanceException
    */
   List<Object[]> klines(
-          @QueryParam("symbol") String symbol,
-          @QueryParam("interval") String interval,
-          @QueryParam("limit") Integer limit,
-          @QueryParam("startTime") Long startTime,
-          @QueryParam("endTime") Long endTime)
-          throws IOException, BinanceException;
+      @QueryParam("symbol") String symbol,
+      @QueryParam("interval") String interval,
+      @QueryParam("limit") Integer limit,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime)
+      throws IOException, BinanceException;
 
   @GET
   @Path("api/v1/ticker/24hr")
@@ -132,7 +135,7 @@ public interface Binance {
    * @throws BinanceException
    */
   BinanceTicker24h ticker24h(@QueryParam("symbol") String symbol)
-          throws IOException, BinanceException;
+      throws IOException, BinanceException;
 
   @GET
   @Path("api/v1/ticker/allPrices")

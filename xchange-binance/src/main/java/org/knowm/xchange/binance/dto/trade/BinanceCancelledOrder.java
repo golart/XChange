@@ -10,10 +10,10 @@ public final class BinanceCancelledOrder {
   public final String clientOrderId;
 
   public BinanceCancelledOrder(
-          @JsonProperty("symbol") String symbol,
-          @JsonProperty("origClientOrderId") String origClientOrderId,
-          @JsonProperty("orderId") long orderId,
-          @JsonProperty("clientOrderId") String clientOrderId) {
+      @JsonProperty("symbol") String symbol,
+      @JsonProperty("origClientOrderId") String origClientOrderId,
+      @JsonProperty("orderId") long orderId,
+      @JsonProperty("clientOrderId") String clientOrderId) {
     super();
     this.symbol = symbol;
     this.origClientOrderId = origClientOrderId;
