@@ -1,11 +1,5 @@
 package org.knowm.xchange.exmo.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -16,6 +10,13 @@ import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.exmo.holder.ExmoMarketDataHolder;
 import org.knowm.xchange.utils.DateUtils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 public class ExmoAdapters {
   public static UserTrade adaptTrade(Map<String, String> tradeDatum, CurrencyPair currencyPair) {
     Order.OrderType type = adaptOrderType(tradeDatum);
@@ -24,9 +25,16 @@ public class ExmoAdapters {
     Date date = DateUtils.fromUnixTime(Long.valueOf(tradeDatum.get("date")));
     String tradeId = tradeDatum.get("trade_id");
     String orderId = tradeDatum.get("order_id");
-    BigDecimal feeAmount = amount.multiply(new BigDecimal(0.002));
+
+    BigDecimal feeAmount =
+            type == Order.OrderType.BID
+                    ? amount.multiply(new BigDecimal(0.002))
+                    : amount.multiply(price).multiply(new BigDecimal(0.002));
+
+    Currency feeCurrency = type == Order.OrderType.BID ? currencyPair.base : currencyPair.counter;
+
     return new UserTrade(
-        type, amount, currencyPair, price, date, tradeId, orderId, feeAmount, currencyPair.base);
+            type, amount, currencyPair, price, date, tradeId, orderId, feeAmount, feeCurrency);
   }
 
   public static Order.OrderType adaptOrderType(Map<String, String> order) {

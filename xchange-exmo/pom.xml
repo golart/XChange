@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>xchange-exmo-custom</artifactId>
-    <version>4.3.16.3</version>
+    <version>4.3.22.5.1</version>
 
     <name>XChange Exmo</name>
     <description>XChange implementation for the Exmo Exchange</description>
@@ -35,18 +35,15 @@
 
     <!-- Parent provides default configuration for dependencies -->
     <dependencies>
-
         <dependency>
             <groupId>org.knowm.xchange</groupId>
             <artifactId>xchange-core-custom</artifactId>
-            <version>4.3.16</version>
+            <version>4.3.22-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>
