@@ -1,5 +1,6 @@
 package org.knowm.xchange.exmo.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -17,19 +18,31 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static org.knowm.xchange.exmo.service.BaseExmoService.adaptMarket;
+
 public class ExmoAdapters {
-  public static UserTrade adaptTrade(Map<String, String> tradeDatum, CurrencyPair currencyPair) {
+
+  public static UserTrade adaptTrade(Map<String, String> tradeDatum) {
     Order.OrderType type = adaptOrderType(tradeDatum);
     BigDecimal amount = new BigDecimal(tradeDatum.get("quantity"));
     BigDecimal price = new BigDecimal(tradeDatum.get("price"));
     Date date = DateUtils.fromUnixTime(Long.valueOf(tradeDatum.get("date")));
     String tradeId = tradeDatum.get("trade_id");
     String orderId = tradeDatum.get("order_id");
-    BigDecimal feeAmount = new BigDecimal(tradeDatum.get("commission_amount"));
-    Currency feeCurrency = Currency.getInstance(tradeDatum.get("commission_currency"));
 
-    return new UserTrade(
-            type, amount, currencyPair, price, date, tradeId, orderId, feeAmount, feeCurrency);
+    CurrencyPair pair = adaptMarket(tradeDatum.get("pair"));
+
+    Currency feeCurrency;
+    BigDecimal feeAmount;
+    if (!StringUtils.isEmpty(tradeDatum.get("commission_currency"))) {
+      feeCurrency = Currency.getInstance(tradeDatum.get("commission_currency"));
+      feeAmount = new BigDecimal(tradeDatum.get("commission_amount"));
+    } else { // trades executed before API v1.1 release (appr. 17.04.2020)
+      feeCurrency = pair.base;
+      feeAmount = amount.multiply(new BigDecimal(0.002));
+    }
+
+    return new UserTrade(type, amount, pair, price, date, tradeId, orderId, feeAmount, feeCurrency);
   }
 
   public static Order.OrderType adaptOrderType(Map<String, String> order) {
