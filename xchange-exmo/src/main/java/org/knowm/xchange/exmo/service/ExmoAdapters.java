@@ -38,8 +38,10 @@ public class ExmoAdapters {
       feeCurrency = Currency.getInstance(tradeDatum.get("commission_currency"));
       feeAmount = new BigDecimal(tradeDatum.get("commission_amount"));
     } else { // trades executed before API v1.1 release (appr. 17.04.2020)
-      feeCurrency = pair.base;
-      feeAmount = amount.multiply(new BigDecimal(0.002));
+      feeAmount = type == Order.OrderType.BID
+              ? amount.multiply(new BigDecimal(0.002))
+              : amount.multiply(price).multiply(new BigDecimal(0.002));
+      feeCurrency = type == Order.OrderType.BID ? pair.base : pair.counter;
     }
 
     return new UserTrade(type, amount, pair, price, date, tradeId, orderId, feeAmount, feeCurrency);
