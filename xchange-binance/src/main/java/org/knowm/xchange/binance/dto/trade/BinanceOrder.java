@@ -19,21 +19,10 @@ public final class BinanceOrder {
   public final OrderSide side;
   public final BigDecimal stopPrice;
   public final BigDecimal icebergQty;
-  public final BigDecimal avgPrice;
-  public final BigDecimal cumQuote;
-  public final BigDecimal activatePrice;
-  public final BigDecimal priceRate;
-  public final boolean reduceOnly;
-  public final WorkingType workingType;
   public final long time;
 
   public BinanceOrder(
       @JsonProperty("symbol") String symbol,
-      @JsonProperty("avgPrice") BigDecimal avgPrice,
-      @JsonProperty("cumQuote") BigDecimal cumQuote,
-      @JsonProperty("activatePrice") BigDecimal activatePrice,
-      @JsonProperty("priceRate") BigDecimal priceRate,
-      @JsonProperty("reduceOnly") boolean reduceOnly,
       @JsonProperty("orderId") long orderId,
       @JsonProperty("clientOrderId") String clientOrderId,
       @JsonProperty("price") BigDecimal price,
@@ -46,7 +35,6 @@ public final class BinanceOrder {
       @JsonProperty("side") OrderSide side,
       @JsonProperty("stopPrice") BigDecimal stopPrice,
       @JsonProperty("icebergQty") BigDecimal icebergQty,
-      @JsonProperty("workingType") WorkingType workingType,
       @JsonProperty("time") long time) {
     this.symbol = symbol;
     this.orderId = orderId;
@@ -62,12 +50,6 @@ public final class BinanceOrder {
     this.stopPrice = stopPrice;
     this.icebergQty = icebergQty;
     this.time = time;
-    this.avgPrice = avgPrice;
-    this.cumQuote = cumQuote;
-    this.reduceOnly = reduceOnly;
-    this.activatePrice = activatePrice;
-    this.priceRate = priceRate;
-    this.workingType = workingType;
   }
 
   public Date getTime() {

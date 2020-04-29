@@ -9,10 +9,7 @@ import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.BinanceMessage;
 import org.knowm.xchange.binance.dto.account.futures.*;
 import org.knowm.xchange.binance.dto.trade.*;
-import org.knowm.xchange.binance.dto.trade.futures.BinanceFuturesCancelledOrder;
-import org.knowm.xchange.binance.dto.trade.futures.BinanceFuturesPositionMarginHistory;
-import org.knowm.xchange.binance.dto.trade.futures.BinanceFuturesUserTrade;
-import org.knowm.xchange.binance.dto.trade.futures.MarginType;
+import org.knowm.xchange.binance.dto.trade.futures.*;
 import si.mazi.rescu.ParamsDigest;
 
 @Path("")
@@ -23,7 +20,7 @@ public interface BinanceFuturesAuthenticated extends BinanceFutures {
   static final String X_MBX_APIKEY = "X-MBX-APIKEY";
 
   @POST
-  @Path("fapi/v1/orderr")
+  @Path("fapi/v1/order")
   /**
    * Send in a new order
    *
@@ -43,7 +40,7 @@ public interface BinanceFuturesAuthenticated extends BinanceFutures {
    * @throws IOException
    * @throws BinanceException
    */
-  BinanceNewOrder newOrder(
+  BinanceFuturesNewOrder newOrder(
       @FormParam("symbol") String symbol,
       @FormParam("side") OrderSide side,
       @FormParam("type") OrderType type,
@@ -79,7 +76,7 @@ public interface BinanceFuturesAuthenticated extends BinanceFutures {
    * @throws IOException
    * @throws BinanceException
    */
-  BinanceOrder orderStatus(
+  BinanceFuturesOrder getFuturesOrder(
       @QueryParam("symbol") String symbol,
       @QueryParam("orderId") long orderId,
       @QueryParam("origClientOrderId") String origClientOrderId,
@@ -130,7 +127,7 @@ public interface BinanceFuturesAuthenticated extends BinanceFutures {
 
   @GET
   @Path("fapi/v1/openOrder")
-  BinanceOrder getOpenOrder(
+  BinanceFuturesOrder getOpenOrder(
       @QueryParam("symbol") String symbol,
       @QueryParam("orderId") long orderId,
       @QueryParam("origClientOrderId") String origClientOrderId,
@@ -142,7 +139,7 @@ public interface BinanceFuturesAuthenticated extends BinanceFutures {
 
   @GET
   @Path("fapi/v1/openOrders")
-  List<BinanceOrder> getOpenOrders(
+  List<BinanceFuturesOrder> getOpenOrders(
       @QueryParam("symbol") String symbol,
       @QueryParam("recvWindow") Long recvWindow,
       @QueryParam("timestamp") long timestamp,
@@ -152,7 +149,7 @@ public interface BinanceFuturesAuthenticated extends BinanceFutures {
 
   @GET
   @Path("fapi/v1/allOrders")
-  List<BinanceOrder> getAllOrders(
+  List<BinanceFuturesOrder> getAllOrders(
       @QueryParam("symbol") String symbol,
       @QueryParam("orderId") long orderId,
       @QueryParam("startTime") Long startTime,

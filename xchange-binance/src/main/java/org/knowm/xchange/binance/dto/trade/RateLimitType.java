@@ -10,7 +10,7 @@ public enum RateLimitType {
   @JsonCreator
   public static RateLimitType getRateLimit(String s) {
     try {
-      return RateLimitType.valueOf(s);
+      return valueOf(s);
     } catch (Exception e) {
       throw new RuntimeException("Unknown order side " + s + ".");
     }

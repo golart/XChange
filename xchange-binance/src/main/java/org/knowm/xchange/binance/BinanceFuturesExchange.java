@@ -13,10 +13,9 @@ import org.knowm.xchange.binance.dto.account.AssetDetail;
 import org.knowm.xchange.binance.dto.meta.exchangeinfo.BinanceExchangeInfo;
 import org.knowm.xchange.binance.dto.meta.exchangeinfo.Filter;
 import org.knowm.xchange.binance.dto.meta.exchangeinfo.Symbol;
-import org.knowm.xchange.binance.service.BinanceAccountService;
 import org.knowm.xchange.binance.service.futures.BinanceFuturesAccountService;
 import org.knowm.xchange.binance.service.futures.BinanceFuturesMarketDataService;
-import org.knowm.xchange.binance.service.futures.BinanceTradeFuturesService;
+import org.knowm.xchange.binance.service.futures.BinanceFuturesTradeService;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.meta.CurrencyMetaData;
@@ -33,14 +32,13 @@ public class BinanceFuturesExchange extends BaseExchange {
   private static final Logger LOG = LoggerFactory.getLogger(BinanceFuturesExchange.class);
 
   private BinanceExchangeInfo exchangeInfo;
-  protected BinanceTradeFuturesService tradeFuturesService;
   private Long deltaServerTimeExpire;
   private Long deltaServerTime;
 
   @Override
   protected void initServices() {
     this.marketDataService = new BinanceFuturesMarketDataService(this);
-    this.tradeFuturesService = new BinanceTradeFuturesService(this);
+    this.tradeService = new BinanceFuturesTradeService(this);
     this.accountService = new BinanceFuturesAccountService(this);
   }
 
@@ -79,8 +77,9 @@ public class BinanceFuturesExchange extends BaseExchange {
       exchangeInfo = marketDataService.getExchangeInfo();
       Symbol[] symbols = exchangeInfo.getSymbols();
 
-      BinanceAccountService accountService = (BinanceAccountService) getAccountService();
-      Map<String, AssetDetail> assetDetailMap = accountService.getAssetDetails();
+      //      BinanceFuturesAccountService accountService = (BinanceFuturesAccountService)
+      // getAccountService();
+      Map<String, AssetDetail> assetDetailMap = null;
       // Clear all hardcoded currencies when loading dynamically from exchange.
       if (assetDetailMap != null) {
         currencies.clear();
@@ -168,8 +167,9 @@ public class BinanceFuturesExchange extends BaseExchange {
     if (deltaServerTime == null || deltaServerTimeExpire <= System.currentTimeMillis()) {
 
       // Do a little warm up
-      Binance binance =
-          RestProxyFactory.createProxy(Binance.class, getExchangeSpecification().getSslUri());
+      BinanceFutures binance =
+          RestProxyFactory.createProxy(
+              BinanceFutures.class, getExchangeSpecification().getSslUri());
       Date serverTime = new Date(binance.time().getServerTime().getTime());
 
       // Assume that we are closer to the server time when we get the repose

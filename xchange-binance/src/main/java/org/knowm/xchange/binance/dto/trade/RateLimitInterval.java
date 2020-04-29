@@ -11,7 +11,7 @@ public enum RateLimitInterval {
   @JsonCreator
   public static RateLimitInterval getRateLimitInterval(String s) {
     try {
-      return RateLimitInterval.valueOf(s);
+      return valueOf(s);
     } catch (Exception e) {
       throw new RuntimeException("Unknown order side " + s + ".");
     }

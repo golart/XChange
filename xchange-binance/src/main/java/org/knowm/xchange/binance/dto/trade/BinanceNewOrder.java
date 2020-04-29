@@ -12,17 +12,11 @@ public final class BinanceNewOrder {
   public final BigDecimal price;
   public final BigDecimal origQty;
   public final BigDecimal executedQty;
-  public final OrderStatus status;
+  public final BigDecimal cummulativeQuoteQty;
+  public final org.knowm.xchange.binance.dto.trade.OrderStatus status;
   public final TimeInForce timeInForce;
-  public final OrderType type;
+  public final org.knowm.xchange.binance.dto.trade.OrderType type;
   public final OrderSide side;
-  public final BigDecimal stopPrice;
-  public final BigDecimal cumQuote;
-  public final BigDecimal activatePrice;
-  public final boolean reduceOnly;
-  public final BigDecimal priceRate;
-  public final long updateTime;
-  public final WorkingType workingType;
 
   public BinanceNewOrder(
       @JsonProperty("symbol") String symbol,
@@ -32,18 +26,11 @@ public final class BinanceNewOrder {
       @JsonProperty("price") BigDecimal price,
       @JsonProperty("origQty") BigDecimal origQty,
       @JsonProperty("executedQty") BigDecimal executedQty,
-      @JsonProperty("status") OrderStatus status,
+      @JsonProperty("cummulativeQuoteQty") BigDecimal cummulativeQuoteQty,
+      @JsonProperty("status") org.knowm.xchange.binance.dto.trade.OrderStatus status,
       @JsonProperty("timeInForce") TimeInForce timeInForce,
-      @JsonProperty("type") OrderType type,
-      @JsonProperty("side") OrderSide side,
-      @JsonProperty("stopPrice") BigDecimal stopPrice,
-      @JsonProperty("cumQuote") BigDecimal cumQuote,
-      @JsonProperty("activatePrice") BigDecimal activatePrice,
-      @JsonProperty("priceRate") BigDecimal priceRate,
-      @JsonProperty("updateTime") long updateTime,
-      @JsonProperty("workingType") WorkingType workingType,
-      @JsonProperty("reduceOnly") boolean reduceOnly) {
-    super();
+      @JsonProperty("type") org.knowm.xchange.binance.dto.trade.OrderType type,
+      @JsonProperty("side") OrderSide side) {
     this.symbol = symbol;
     this.orderId = orderId;
     this.clientOrderId = clientOrderId;
@@ -55,12 +42,6 @@ public final class BinanceNewOrder {
     this.timeInForce = timeInForce;
     this.type = type;
     this.side = side;
-    this.workingType = workingType;
-    this.reduceOnly = reduceOnly;
-    this.updateTime = updateTime;
-    this.priceRate = priceRate;
-    this.activatePrice = activatePrice;
-    this.cumQuote = cumQuote;
-    this.stopPrice = stopPrice;
+    this.cummulativeQuoteQty = cummulativeQuoteQty;
   }
 }

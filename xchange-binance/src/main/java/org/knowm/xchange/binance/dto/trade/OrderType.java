@@ -16,7 +16,7 @@ public enum OrderType {
   @JsonCreator
   public static OrderType getOrderType(String s) {
     try {
-      return OrderType.valueOf(s);
+      return valueOf(s);
     } catch (Exception e) {
       throw new RuntimeException("Unknown order type " + s + ".");
     }

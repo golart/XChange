@@ -3,6 +3,8 @@ package org.knowm.xchange.binance.dto.trade;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.util.Date;
+import org.knowm.xchange.binance.BinanceAdapters;
+import org.knowm.xchange.currency.CurrencyPair;
 
 public final class BinanceTrade {
 
@@ -17,6 +19,7 @@ public final class BinanceTrade {
   public final boolean isMaker;
   public final boolean isBestMatch;
   public final boolean isBuyerMaker;
+  public final CurrencyPair symbol;
 
   public BinanceTrade(
       @JsonProperty("id") long id,
@@ -29,7 +32,8 @@ public final class BinanceTrade {
       @JsonProperty("isBuyer") boolean isBuyer,
       @JsonProperty("isMaker") boolean isMaker,
       @JsonProperty("isBestMatch") boolean isBestMatch,
-      @JsonProperty("isBuyerMaker") boolean isBuyerMaker) {
+      @JsonProperty("isBuyerMaker") boolean isBuyerMaker,
+      @JsonProperty("symbol") String symbol) {
     this.id = id;
     this.orderId = orderId;
     this.price = price;
@@ -41,6 +45,51 @@ public final class BinanceTrade {
     this.isMaker = isMaker;
     this.isBestMatch = isBestMatch;
     this.isBuyerMaker = isBuyerMaker;
+    this.symbol = BinanceAdapters.adaptSymbol(symbol);
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public long getOrderId() {
+    return orderId;
+  }
+
+  public BigDecimal getPrice() {
+    return price;
+  }
+
+  public BigDecimal getQty() {
+    return qty;
+  }
+
+  public BigDecimal getCommission() {
+    return commission;
+  }
+
+  public String getCommissionAsset() {
+    return commissionAsset;
+  }
+
+  public boolean isBuyer() {
+    return isBuyer;
+  }
+
+  public boolean isMaker() {
+    return isMaker;
+  }
+
+  public boolean isBestMatch() {
+    return isBestMatch;
+  }
+
+  public boolean isBuyerMaker() {
+    return isBuyerMaker;
+  }
+
+  public CurrencyPair getSymbol() {
+    return symbol;
   }
 
   public Date getTime() {

@@ -18,25 +18,25 @@ import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.binance.dto.trade.futures.*;
 import org.knowm.xchange.currency.CurrencyPair;
 
-public class BinanceTradeFuturesServiceRaw extends BinanceFuturesBaseService {
+public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
 
-  protected BinanceTradeFuturesServiceRaw(Exchange exchange) {
+  protected BinanceFuturesTradeServiceRaw(Exchange exchange) {
     super(exchange);
   }
 
-  public List<BinanceOrder> openOrders(Long recvWindow, long timestamp)
+  public List<BinanceFuturesOrder> openOrders(Long recvWindow, long timestamp)
       throws BinanceException, IOException {
     return binanceFutures.getOpenOrders(
         null, recvWindow, timestamp, this.apiKey, this.signatureCreator);
   }
 
-  public List<BinanceOrder> openOrders(CurrencyPair pair, Long recvWindow, long timestamp)
+  public List<BinanceFuturesOrder> openOrders(CurrencyPair pair, Long recvWindow, long timestamp)
       throws BinanceException, IOException {
     return binanceFutures.getOpenOrders(
         BinanceAdapters.toSymbol(pair), recvWindow, timestamp, this.apiKey, this.signatureCreator);
   }
 
-  public BinanceNewOrder newOrder(
+  public BinanceFuturesNewOrder newOrder(
       CurrencyPair pair,
       OrderSide side,
       OrderType type,
@@ -71,15 +71,14 @@ public class BinanceTradeFuturesServiceRaw extends BinanceFuturesBaseService {
         this.signatureCreator);
   }
 
-  public BinanceOrder orderStatus(
-      CurrencyPair pair, long orderId, String origClientOrderId, Long recvWindow, long timestamp)
+  public BinanceFuturesOrder getOrder(CurrencyPair pair, long orderId, String origClientOrderId)
       throws IOException, BinanceException {
-    return binanceFutures.orderStatus(
+    return binanceFutures.getFuturesOrder(
         BinanceAdapters.toSymbol(pair),
         orderId,
         origClientOrderId,
-        recvWindow,
-        timestamp,
+        getRecvWindow(),
+        getTimestamp(),
         this.apiKey,
         this.signatureCreator);
   }
@@ -112,7 +111,7 @@ public class BinanceTradeFuturesServiceRaw extends BinanceFuturesBaseService {
         this.signatureCreator);
   }
 
-  public List<BinanceOrder> getOpenOrders(final CurrencyPair pair) throws IOException {
+  public List<BinanceFuturesOrder> getOpenOrders(final CurrencyPair pair) throws IOException {
     final Long recvWindow =
         (Long)
             this.exchange
@@ -127,7 +126,7 @@ public class BinanceTradeFuturesServiceRaw extends BinanceFuturesBaseService {
   }
 
   public List<BinanceFuturesUserTrade> userTrades(
-      CurrencyPair pair, Integer limit, Long startTime, Long endTime, Long fromId, Long recvWindow)
+      CurrencyPair pair, Integer limit, Long startTime, Long endTime, Long fromId)
       throws BinanceException, IOException {
     return binanceFutures.userTrades(
         BinanceAdapters.toSymbol(pair),
@@ -135,7 +134,7 @@ public class BinanceTradeFuturesServiceRaw extends BinanceFuturesBaseService {
         endTime,
         fromId,
         limit,
-        recvWindow,
+        getRecvWindow(),
         this.getTimestamp(),
         this.apiKey,
         this.signatureCreator);
@@ -224,5 +223,26 @@ public class BinanceTradeFuturesServiceRaw extends BinanceFuturesBaseService {
         this.getTimestamp(),
         this.apiKey,
         this.signatureCreator);
+  }
+
+  public List<BinanceFuturesOrder> allOrders(
+      CurrencyPair pair,
+      Long orderId,
+      Long startTime,
+      Long endTime,
+      Integer limit,
+      Long recvWindow,
+      long timestamp)
+      throws BinanceException, IOException {
+    return binanceFutures.getAllOrders(
+        BinanceAdapters.toSymbol(pair),
+        orderId,
+        startTime,
+        endTime,
+        limit,
+        recvWindow,
+        timestamp,
+        super.apiKey,
+        super.signatureCreator);
   }
 }

@@ -11,10 +11,10 @@ import org.knowm.xchange.Exchange;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
 import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.trade.BinanceNewOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.binance.dto.trade.OrderType;
 import org.knowm.xchange.binance.dto.trade.TimeInForce;
+import org.knowm.xchange.binance.dto.trade.futures.BinanceFuturesNewOrder;
+import org.knowm.xchange.binance.dto.trade.futures.BinanceFuturesOrder;
 import org.knowm.xchange.binance.dto.trade.futures.BinanceFuturesUserTrade;
 import org.knowm.xchange.binance.service.BinanceTradeHistoryParams;
 import org.knowm.xchange.binance.service.BinanceTradeService;
@@ -30,10 +30,10 @@ import org.knowm.xchange.service.trade.params.*;
 import org.knowm.xchange.service.trade.params.orders.*;
 import org.knowm.xchange.utils.Assert;
 
-public class BinanceTradeFuturesService extends BinanceTradeFuturesServiceRaw
+public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw
     implements TradeService {
 
-  public BinanceTradeFuturesService(Exchange exchange) {
+  public BinanceFuturesTradeService(Exchange exchange) {
     super(exchange);
   }
 
@@ -45,17 +45,13 @@ public class BinanceTradeFuturesService extends BinanceTradeFuturesServiceRaw
   @Override
   public OpenOrders getOpenOrders(OpenOrdersParams params) throws IOException {
     try {
-      Long recvWindow =
-          (Long)
-              exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
-
-      List<BinanceOrder> binanceOpenOrders;
+      List<BinanceFuturesOrder> binanceOpenOrders;
       if (params instanceof OpenOrdersParamCurrencyPair) {
         OpenOrdersParamCurrencyPair pairParams = (OpenOrdersParamCurrencyPair) params;
         CurrencyPair pair = pairParams.getCurrencyPair();
-        binanceOpenOrders = super.openOrders(pair, recvWindow, getTimestamp());
+        binanceOpenOrders = super.openOrders(pair, getRecvWindow(), getTimestamp());
       } else {
-        binanceOpenOrders = super.openOrders(recvWindow, getTimestamp());
+        binanceOpenOrders = super.openOrders(getRecvWindow(), getTimestamp());
       }
 
       List<LimitOrder> limitOrders = new ArrayList<>();
@@ -118,10 +114,7 @@ public class BinanceTradeFuturesService extends BinanceTradeFuturesServiceRaw
       OrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, TimeInForce tif)
       throws IOException {
     try {
-      Long recvWindow =
-          (Long)
-              exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
-      BinanceNewOrder newOrder =
+      BinanceFuturesNewOrder newOrder =
           newOrder(
               order.getCurrencyPair(),
               BinanceAdapters.convert(order.getType()),
@@ -135,7 +128,7 @@ public class BinanceTradeFuturesService extends BinanceTradeFuturesServiceRaw
               null,
               null,
               null,
-              recvWindow,
+              getRecvWindow(),
               getTimestamp());
       return Long.toString(newOrder.orderId);
     } catch (BinanceException e) {
@@ -229,12 +222,8 @@ public class BinanceTradeFuturesService extends BinanceTradeFuturesServiceRaw
       if ((fromId != null) && (startTime != null || endTime != null))
         throw new ExchangeException(
             "You should either specify the id from which you get the user trades from or start and end times. If you specify both, Binance will only honour the fromId parameter.");
-
-      Long recvWindow =
-          (Long)
-              exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
       List<BinanceFuturesUserTrade> binanceTrades =
-          super.userTrades(pair, limit, startTime, endTime, fromId, recvWindow);
+          super.userTrades(pair, limit, startTime, endTime, fromId);
       List<UserTrade> trades =
           binanceTrades.stream()
               .map(
@@ -295,15 +284,10 @@ public class BinanceTradeFuturesService extends BinanceTradeFuturesServiceRaw
 
         orders.add(
             BinanceAdapters.adaptOrder(
-                super.orderStatus(
+                super.getOrder(
                     orderQueryParamCurrencyPair.getCurrencyPair(),
                     BinanceAdapters.id(orderQueryParamCurrencyPair.getOrderId()),
-                    null,
-                    (Long)
-                        exchange
-                            .getExchangeSpecification()
-                            .getExchangeSpecificParametersItem("recvWindow"),
-                    getTimestamp())));
+                    null)));
       }
       return orders;
     } catch (BinanceException e) {

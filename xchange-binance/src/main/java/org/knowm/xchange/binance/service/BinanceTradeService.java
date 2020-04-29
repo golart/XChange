@@ -12,39 +12,18 @@ import org.knowm.xchange.Exchange;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
 import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.trade.BinanceNewOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceTrade;
-import org.knowm.xchange.binance.dto.trade.OrderType;
-import org.knowm.xchange.binance.dto.trade.TimeInForce;
+import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.Order.IOrderFlags;
 import org.knowm.xchange.dto.marketdata.Trades;
-import org.knowm.xchange.dto.trade.LimitOrder;
-import org.knowm.xchange.dto.trade.MarketOrder;
-import org.knowm.xchange.dto.trade.OpenOrders;
-import org.knowm.xchange.dto.trade.StopOrder;
-import org.knowm.xchange.dto.trade.UserTrade;
-import org.knowm.xchange.dto.trade.UserTrades;
+import org.knowm.xchange.dto.trade.*;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.exceptions.NotAvailableFromExchangeException;
 import org.knowm.xchange.service.trade.TradeService;
-import org.knowm.xchange.service.trade.params.CancelOrderByCurrencyPair;
-import org.knowm.xchange.service.trade.params.CancelOrderByIdParams;
-import org.knowm.xchange.service.trade.params.CancelOrderParams;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamCurrencyPair;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamLimit;
-import org.knowm.xchange.service.trade.params.TradeHistoryParams;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamsIdSpan;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamsTimeSpan;
-import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParam;
-import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurrencyPair;
-import org.knowm.xchange.service.trade.params.orders.OpenOrdersParamCurrencyPair;
-import org.knowm.xchange.service.trade.params.orders.OpenOrdersParams;
-import org.knowm.xchange.service.trade.params.orders.OrderQueryParamCurrencyPair;
-import org.knowm.xchange.service.trade.params.orders.OrderQueryParams;
+import org.knowm.xchange.service.trade.params.*;
+import org.knowm.xchange.service.trade.params.orders.*;
 import org.knowm.xchange.utils.Assert;
 
 public class BinanceTradeService extends BinanceTradeServiceRaw implements TradeService {
@@ -97,11 +76,19 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
 
   @Override
   public String placeMarketOrder(MarketOrder mo) throws IOException {
-    return placeOrder(OrderType.MARKET, mo, null, null, null);
+    return Long.toString(placeOrder(OrderType.MARKET, mo, null, null, null).orderId);
+  }
+
+  public BinanceNewOrder placeMarketOrder2(final MarketOrder mo) throws IOException {
+    return this.placeOrder(OrderType.MARKET, (Order) mo, null, null, null);
   }
 
   @Override
   public String placeLimitOrder(LimitOrder limitOrder) throws IOException {
+    return Long.toString(placeLimitOrder2(limitOrder).orderId);
+  }
+
+  public BinanceNewOrder placeLimitOrder2(LimitOrder limitOrder) throws IOException {
     TimeInForce tif = timeInForceFromOrder(limitOrder).orElse(TimeInForce.GTC);
     OrderType type;
     if (limitOrder.hasFlag(org.knowm.xchange.binance.dto.trade.BinanceOrderFlags.LIMIT_MAKER)) {
@@ -124,7 +111,8 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
 
     OrderType orderType = BinanceAdapters.adaptOrderType(order);
 
-    return placeOrder(orderType, order, order.getLimitPrice(), order.getStopPrice(), tif);
+    return Long.toString(
+        placeOrder(orderType, order, order.getLimitPrice(), order.getStopPrice(), tif).orderId);
   }
 
   private Optional<TimeInForce> timeInForceFromOrder(Order order) {
@@ -134,27 +122,22 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
         .findFirst();
   }
 
-  private String placeOrder(
+  private BinanceNewOrder placeOrder(
       OrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, TimeInForce tif)
       throws IOException {
     try {
-      Long recvWindow =
-          (Long)
-              exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
-      BinanceNewOrder newOrder =
-          newOrder(
-              order.getCurrencyPair(),
-              BinanceAdapters.convert(order.getType()),
-              type,
-              tif,
-              order.getOriginalAmount(),
-              limitPrice,
-              getClientOrderId(order),
-              stopPrice,
-              null,
-              recvWindow,
-              getTimestamp());
-      return Long.toString(newOrder.orderId);
+      return newOrder(
+          order.getCurrencyPair(),
+          BinanceAdapters.convert(order.getType()),
+          type,
+          tif,
+          order.getOriginalAmount(),
+          limitPrice,
+          getClientOrderId(order),
+          stopPrice,
+          null,
+          getRecvWindow(),
+          getTimestamp());
     } catch (BinanceException e) {
       throw BinanceErrorAdapter.adapt(e);
     }

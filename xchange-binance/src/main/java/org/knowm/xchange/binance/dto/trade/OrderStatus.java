@@ -14,7 +14,7 @@ public enum OrderStatus {
   @JsonCreator
   public static OrderStatus getOrderStatus(String s) {
     try {
-      return OrderStatus.valueOf(s);
+      return valueOf(s);
     } catch (Exception e) {
       throw new RuntimeException("Unknown order status " + s + ".");
     }

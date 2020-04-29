@@ -9,7 +9,7 @@ public enum OrderSide {
   @JsonCreator
   public static OrderSide getOrderSide(String s) {
     try {
-      return OrderSide.valueOf(s);
+      return valueOf(s);
     } catch (Exception e) {
       throw new RuntimeException("Unknown order side " + s + ".");
     }

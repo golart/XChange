@@ -192,4 +192,8 @@ public class BinanceExchange extends BaseExchange {
 
     return deltaServerTime;
   }
+
+  public BinanceTradeMarginService getMarginTradeService() {
+    return marginTradeService;
+  }
 }

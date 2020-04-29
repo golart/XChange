@@ -1,0 +1,19 @@
+{
+  "currency_pairs": {
+    "BTC/USDT": {
+      "price_scale": 4,
+      "trading_fee": 0
+    }
+  },
+  "currencies": {
+    "BTC": {
+      "scale": 4,
+      "withdrawal_fee": 0
+    },
+    "USDT": {
+      "scale": 4,
+      "withdrawal_fee": 0
+    }
+  }
+}
+
