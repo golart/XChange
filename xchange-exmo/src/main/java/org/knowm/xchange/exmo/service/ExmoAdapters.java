@@ -48,7 +48,15 @@ public class ExmoAdapters {
   }
 
   public static Order.OrderType adaptOrderType(Map<String, String> order) {
-    return order.get("type").equals("sell") ? Order.OrderType.ASK : Order.OrderType.BID;
+    if (order.get("type").equals("sell")) {
+      return Order.OrderType.ASK;
+    } else if (order.get("type").equals("buy")) {
+      return Order.OrderType.BID;
+    } else if (order.get("type").equals("stop_market_sell")) {
+      return Order.OrderType.STOP_MARKET_SELL;
+    } else {
+      return null;
+    }
   }
 
   public static Balance adaptBalance(

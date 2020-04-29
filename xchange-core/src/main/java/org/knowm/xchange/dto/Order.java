@@ -1,11 +1,12 @@
 package org.knowm.xchange.dto;
 
+import org.knowm.xchange.currency.CurrencyPair;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.knowm.xchange.currency.CurrencyPair;
 
 /** Data object representing an order */
 public abstract class Order implements Serializable {
@@ -285,7 +286,10 @@ public abstract class Order implements Serializable {
      * This is to close a long position when trading crypto currency derivatives such as swaps,
      * futures for CFD's.
      */
-    EXIT_BID;
+    EXIT_BID,
+
+    // exmo stop loss order
+    STOP_MARKET_SELL;
 
     public OrderType getOpposite() {
       switch (this) {
