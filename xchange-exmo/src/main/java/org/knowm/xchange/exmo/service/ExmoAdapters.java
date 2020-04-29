@@ -3,6 +3,8 @@ package org.knowm.xchange.exmo.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -12,6 +14,15 @@ import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.exmo.holder.ExmoMarketDataHolder;
 import org.knowm.xchange.utils.DateUtils;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.knowm.xchange.exmo.service.BaseExmoService.adaptMarket;
 
 public class ExmoAdapters {
   public static UserTrade adaptTrade(Map<String, String> tradeDatum, CurrencyPair currencyPair) {
@@ -24,12 +35,30 @@ public class ExmoAdapters {
     BigDecimal feeAmount = new BigDecimal(tradeDatum.get("commission_amount"));
     Currency feeCurrency = Currency.getInstance(tradeDatum.get("commission_currency"));
 
+      if (!StringUtils.isEmpty(tradeDatum.get("commission_currency"))) {
+          feeCurrency = Currency.getInstance(tradeDatum.get("commission_currency"));
+          feeAmount = new BigDecimal(tradeDatum.get("commission_amount"));
+      } else { // trades executed before API v1.1 release (appr. 17.04.2020)
+          feeAmount = type == Order.OrderType.BID
+                  ? amount.multiply(new BigDecimal(0.002))
+                  : amount.multiply(price).multiply(new BigDecimal(0.002));
+          feeCurrency = type == Order.OrderType.BID ? currencyPair.base : currencyPair.counter;
+      }
+    
     return new UserTrade(
         type, amount, currencyPair, price, date, tradeId, orderId, feeAmount, feeCurrency, null);
   }
 
   public static Order.OrderType adaptOrderType(Map<String, String> order) {
-    return order.get("type").equals("sell") ? Order.OrderType.ASK : Order.OrderType.BID;
+    if (order.get("type").equals("sell")) {
+      return Order.OrderType.ASK;
+    } else if (order.get("type").equals("buy")) {
+      return Order.OrderType.BID;
+    } else if (order.get("type").equals("stop_market_sell")) {
+      return Order.OrderType.STOP_MARKET_SELL;
+    } else {
+      return null;
+    }
   }
 
   public static Balance adaptBalance(

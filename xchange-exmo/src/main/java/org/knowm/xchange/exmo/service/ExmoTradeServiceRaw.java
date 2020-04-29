@@ -1,15 +1,5 @@
 package org.knowm.xchange.exmo.service;
 
-import static org.apache.commons.lang3.StringUtils.join;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -18,6 +8,11 @@ import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.exmo.dto.trade.ExmoUserTrades;
 import org.knowm.xchange.utils.DateUtils;
+
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.join;
 
 public class ExmoTradeServiceRaw extends BaseExmoService {
   protected ExmoTradeServiceRaw(Exchange exchange) {
@@ -77,12 +72,11 @@ public class ExmoTradeServiceRaw extends BaseExmoService {
     BigDecimal originalAmount = new BigDecimal(map.get("out_amount").toString());
 
     for (Map<String, Object> tradeDatum : (List<Map<String, Object>>) map.get("trades")) {
-      CurrencyPair market = adaptMarket(tradeDatum.get("pair").toString());
       Map<String, String> bodge = new HashMap<>();
       for (String key : tradeDatum.keySet()) {
         bodge.put(key, tradeDatum.get(key).toString());
       }
-      userTrades.add(ExmoAdapters.adaptTrade(bodge, market));
+      userTrades.add(ExmoAdapters.adaptTrade(bodge));
     }
 
     return new ExmoUserTrades(originalAmount, userTrades);
@@ -107,7 +101,7 @@ public class ExmoTradeServiceRaw extends BaseExmoService {
     List<UserTrade> trades = new ArrayList<>();
     for (String market : map.keySet()) {
       for (Map<String, String> tradeDatum : map.get(market)) {
-        trades.add(ExmoAdapters.adaptTrade(tradeDatum, adaptMarket(market)));
+        trades.add(ExmoAdapters.adaptTrade(tradeDatum));
       }
     }
 

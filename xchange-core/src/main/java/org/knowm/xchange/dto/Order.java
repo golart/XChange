@@ -4,16 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.dto.trade.LimitOrder;
+import org.knowm.xchange.dto.trade.MarketOrder;
+import org.knowm.xchange.dto.trade.StopOrder;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import org.knowm.xchange.currency.CurrencyPair;
-import org.knowm.xchange.dto.trade.LimitOrder;
-import org.knowm.xchange.dto.trade.MarketOrder;
-import org.knowm.xchange.dto.trade.StopOrder;
 
 /** Data object representing an order */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "trigger")
@@ -371,7 +372,10 @@ public abstract class Order implements Serializable {
      * This is to close a long position when trading crypto currency derivatives such as swaps,
      * futures for CFD's.
      */
-    EXIT_BID;
+    EXIT_BID,
+
+    // exmo stop loss order
+    STOP_MARKET_SELL;
 
     public OrderType getOpposite() {
       switch (this) {
