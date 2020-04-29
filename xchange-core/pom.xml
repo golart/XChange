@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>xchange-core-custom</artifactId>
-	<version>4.3.22.1</version>
+	<version>4.4.2.2</version>
 
 	<name>XChange Core</name>
 	<description>Core functionality used by all other modules.</description>

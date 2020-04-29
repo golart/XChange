@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>xchange-exmo-custom</artifactId>
-    <version>4.4.2.1</version>
+    <version>4.4.2.2</version>
 
     <name>XChange Exmo</name>
     <description>XChange implementation for the Exmo Exchange</description>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.knowm.xchange</groupId>
             <artifactId>xchange-core-custom</artifactId>
-            <version>4.4.2</version>
+            <version>4.4.2.2</version>
         </dependency>
 
         <dependency>

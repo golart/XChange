@@ -1,9 +1,14 @@
 package org.knowm.xchange.exmo.service;
 
+import static org.knowm.xchange.exmo.service.BaseExmoService.adaptMarket;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import org.apache.commons.lang3.StringUtils;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
@@ -15,38 +20,33 @@ import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.exmo.holder.ExmoMarketDataHolder;
 import org.knowm.xchange.utils.DateUtils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import static org.knowm.xchange.exmo.service.BaseExmoService.adaptMarket;
-
 public class ExmoAdapters {
-  public static UserTrade adaptTrade(Map<String, String> tradeDatum, CurrencyPair currencyPair) {
+  public static UserTrade adaptTrade(Map<String, String> tradeDatum) {
     Order.OrderType type = adaptOrderType(tradeDatum);
     BigDecimal amount = new BigDecimal(tradeDatum.get("quantity"));
     BigDecimal price = new BigDecimal(tradeDatum.get("price"));
     Date date = DateUtils.fromUnixTime(Long.parseLong(tradeDatum.get("date")));
     String tradeId = tradeDatum.get("trade_id");
     String orderId = tradeDatum.get("order_id");
-    BigDecimal feeAmount = new BigDecimal(tradeDatum.get("commission_amount"));
-    Currency feeCurrency = Currency.getInstance(tradeDatum.get("commission_currency"));
 
-      if (!StringUtils.isEmpty(tradeDatum.get("commission_currency"))) {
-          feeCurrency = Currency.getInstance(tradeDatum.get("commission_currency"));
-          feeAmount = new BigDecimal(tradeDatum.get("commission_amount"));
-      } else { // trades executed before API v1.1 release (appr. 17.04.2020)
-          feeAmount = type == Order.OrderType.BID
-                  ? amount.multiply(new BigDecimal(0.002))
-                  : amount.multiply(price).multiply(new BigDecimal(0.002));
-          feeCurrency = type == Order.OrderType.BID ? currencyPair.base : currencyPair.counter;
-      }
-    
+    CurrencyPair pair = adaptMarket(tradeDatum.get("pair"));
+
+    Currency feeCurrency;
+    BigDecimal feeAmount;
+
+    if (!StringUtils.isEmpty(tradeDatum.get("commission_currency"))) {
+      feeCurrency = Currency.getInstance(tradeDatum.get("commission_currency"));
+      feeAmount = new BigDecimal(tradeDatum.get("commission_amount"));
+    } else { // trades executed before API v1.1 release (appr. 17.04.2020)
+      feeAmount =
+          type == Order.OrderType.BID
+              ? amount.multiply(new BigDecimal(0.002))
+              : amount.multiply(price).multiply(new BigDecimal(0.002));
+      feeCurrency = type == Order.OrderType.BID ? pair.base : pair.counter;
+    }
+
     return new UserTrade(
-        type, amount, currencyPair, price, date, tradeId, orderId, feeAmount, feeCurrency, null);
+        type, amount, pair, price, date, tradeId, orderId, feeAmount, feeCurrency, null);
   }
 
   public static Order.OrderType adaptOrderType(Map<String, String> order) {
