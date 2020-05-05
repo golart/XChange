@@ -2,11 +2,13 @@ package org.knowm.xchange.binance.dto.trade.futures;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
+import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.trade.*;
+import org.knowm.xchange.currency.CurrencyPair;
 
 public final class BinanceFuturesOrder {
 
-  public final String symbol;
+  public final CurrencyPair symbol;
   public final long orderId;
   public final String clientOrderId;
   public final BigDecimal price;
@@ -48,7 +50,7 @@ public final class BinanceFuturesOrder {
       @JsonProperty("icebergQty") BigDecimal icebergQty,
       @JsonProperty("workingType") WorkingType workingType,
       @JsonProperty("time") long time) {
-    this.symbol = symbol;
+    this.symbol = BinanceAdapters.adaptSymbol(symbol);
     this.orderId = orderId;
     this.clientOrderId = clientOrderId;
     this.price = price;
@@ -70,7 +72,7 @@ public final class BinanceFuturesOrder {
     this.workingType = workingType;
   }
 
-  public String getSymbol() {
+  public CurrencyPair getSymbol() {
     return symbol;
   }
 
