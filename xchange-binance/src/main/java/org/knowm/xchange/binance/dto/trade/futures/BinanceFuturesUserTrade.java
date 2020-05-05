@@ -3,7 +3,9 @@ package org.knowm.xchange.binance.dto.trade.futures;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.util.Date;
+import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.trade.OrderSide;
+import org.knowm.xchange.currency.CurrencyPair;
 
 /** @author VKozlov */
 public class BinanceFuturesUserTrade {
@@ -19,7 +21,7 @@ public class BinanceFuturesUserTrade {
   public final BigDecimal quoteQty;
   public final BigDecimal realizedPnl;
   public final OrderSide side;
-  public final String symbol;
+  public final CurrencyPair symbol;
   public final long time;
 
   public BinanceFuturesUserTrade(
@@ -47,7 +49,7 @@ public class BinanceFuturesUserTrade {
     this.quoteQty = quoteQty;
     this.realizedPnl = realizedPnl;
     this.side = side;
-    this.symbol = symbol;
+    this.symbol = BinanceAdapters.adaptSymbol(symbol);
     this.time = time;
   }
 
@@ -95,7 +97,7 @@ public class BinanceFuturesUserTrade {
     return side;
   }
 
-  public String getSymbol() {
+  public CurrencyPair getSymbol() {
     return symbol;
   }
 

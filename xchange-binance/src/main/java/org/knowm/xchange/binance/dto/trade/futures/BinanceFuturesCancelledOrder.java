@@ -2,11 +2,13 @@ package org.knowm.xchange.binance.dto.trade.futures;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
+import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.trade.*;
+import org.knowm.xchange.currency.CurrencyPair;
 
 public final class BinanceFuturesCancelledOrder {
 
-  public final String symbol;
+  public final CurrencyPair symbol;
   public final String origClientOrderId;
   public final long orderId;
   public final String clientOrderId;
@@ -49,7 +51,7 @@ public final class BinanceFuturesCancelledOrder {
       @JsonProperty("updateTime") long updateTime,
       @JsonProperty("workingType") WorkingType workingType) {
     super();
-    this.symbol = symbol;
+    this.symbol = BinanceAdapters.adaptSymbol(symbol);
     this.origClientOrderId = origClientOrderId;
     this.orderId = orderId;
     this.clientOrderId = clientOrderId;
@@ -69,5 +71,85 @@ public final class BinanceFuturesCancelledOrder {
     this.priceRate = priceRate;
     this.updateTime = updateTime;
     this.workingType = workingType;
+  }
+
+  public CurrencyPair getSymbol() {
+    return symbol;
+  }
+
+  public String getOrigClientOrderId() {
+    return origClientOrderId;
+  }
+
+  public long getOrderId() {
+    return orderId;
+  }
+
+  public String getClientOrderId() {
+    return clientOrderId;
+  }
+
+  public BigDecimal getCumQty() {
+    return cumQty;
+  }
+
+  public BigDecimal getCumQuote() {
+    return cumQuote;
+  }
+
+  public BigDecimal getExecutedQty() {
+    return executedQty;
+  }
+
+  public BigDecimal getOrigQty() {
+    return origQty;
+  }
+
+  public OrderType getOrigType() {
+    return origType;
+  }
+
+  public Boolean getReduceOnly() {
+    return reduceOnly;
+  }
+
+  public OrderSide getSide() {
+    return side;
+  }
+
+  public String getPositionSide() {
+    return positionSide;
+  }
+
+  public OrderStatus getStatus() {
+    return status;
+  }
+
+  public BigDecimal getStopPrice() {
+    return stopPrice;
+  }
+
+  public TimeInForce getTimeInForce() {
+    return timeInForce;
+  }
+
+  public OrderType getType() {
+    return type;
+  }
+
+  public BigDecimal getActivatePrice() {
+    return activatePrice;
+  }
+
+  public BigDecimal getPriceRate() {
+    return priceRate;
+  }
+
+  public long getUpdateTime() {
+    return updateTime;
+  }
+
+  public WorkingType getWorkingType() {
+    return workingType;
   }
 }

@@ -2,11 +2,13 @@ package org.knowm.xchange.binance.dto.trade.futures;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
+import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.trade.*;
+import org.knowm.xchange.currency.CurrencyPair;
 
 public final class BinanceFuturesNewOrder {
 
-  public final String symbol;
+  public final CurrencyPair symbol;
   public final long orderId;
   public final String clientOrderId;
   public final long transactTime;
@@ -46,7 +48,7 @@ public final class BinanceFuturesNewOrder {
       @JsonProperty("updateTime") Long updateTime,
       @JsonProperty("workingType") WorkingType workingType,
       @JsonProperty("reduceOnly") boolean reduceOnly) {
-    this.symbol = symbol;
+    this.symbol = BinanceAdapters.adaptSymbol(symbol);
     this.orderId = orderId;
     this.clientOrderId = clientOrderId;
     this.transactTime = transactTime;
@@ -67,7 +69,7 @@ public final class BinanceFuturesNewOrder {
     this.stopPrice = stopPrice;
   }
 
-  public String getSymbol() {
+  public CurrencyPair getSymbol() {
     return symbol;
   }
 
