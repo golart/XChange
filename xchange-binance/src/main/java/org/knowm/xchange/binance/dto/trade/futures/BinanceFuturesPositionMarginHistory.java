@@ -2,6 +2,7 @@ package org.knowm.xchange.binance.dto.trade.futures;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /** @author VKozlov */
 public class BinanceFuturesPositionMarginHistory {
@@ -37,8 +38,8 @@ public class BinanceFuturesPositionMarginHistory {
     return symbol;
   }
 
-  public long getTime() {
-    return time;
+  public Date getTime() {
+    return new Date(time);
   }
 
   public long getType() {

@@ -166,7 +166,7 @@ public class BinanceAdapters {
         .orderStatus(adaptOrderStatus(order.status))
         .originalAmount(order.origQty)
         .id(Long.toString(order.orderId))
-        .timestamp(new Date(order.getTime()))
+        .timestamp(order.getTime())
         .cumulativeAmount(order.cumQuote);
     if (order.clientOrderId != null) {
       builder.flag(BinanceOrderFlags.withClientId(order.clientOrderId));

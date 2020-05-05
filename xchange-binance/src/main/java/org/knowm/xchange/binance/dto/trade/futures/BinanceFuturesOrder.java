@@ -2,6 +2,7 @@ package org.knowm.xchange.binance.dto.trade.futures;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
+import java.util.Date;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.currency.CurrencyPair;
@@ -148,7 +149,7 @@ public final class BinanceFuturesOrder {
     return workingType;
   }
 
-  public long getTime() {
-    return time;
+  public Date getTime() {
+    return new Date(time);
   }
 }
