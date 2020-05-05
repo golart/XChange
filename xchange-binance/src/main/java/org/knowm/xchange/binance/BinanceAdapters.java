@@ -152,7 +152,7 @@ public class BinanceAdapters {
 
   public static Order adaptOrder(BinanceFuturesOrder order) {
     OrderType type = convert(order.side);
-    CurrencyPair currencyPair = adaptSymbol(order.symbol);
+    CurrencyPair currencyPair = order.getSymbol();
     Order.Builder builder;
     if (order.type.equals(org.knowm.xchange.binance.dto.trade.OrderType.MARKET)) {
       builder = new MarketOrder.Builder(type, currencyPair);
