@@ -1,16 +1,17 @@
 package org.knowm.xchange.binance;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.account.*;
 import org.knowm.xchange.binance.dto.account.margin.*;
 import org.knowm.xchange.binance.dto.trade.*;
 import si.mazi.rescu.ParamsDigest;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
@@ -648,17 +649,17 @@ public interface BinanceAuthenticated extends Binance {
 
   @GET
   @Path("sapi/v1/margin/allOrders")
-  List<ShortMarginOrder> getAllMarginOrders(
-      @QueryParam("symbol") final String p0,
-      @QueryParam("orderId") final String p1,
-      @QueryParam("startTime") final Long p2,
-      @QueryParam("endTime") final Long p3,
-      @QueryParam("limit") final Integer p4,
-      @QueryParam("recvWindow") final Long p5,
-      @QueryParam("timestamp") final long p6,
-      @HeaderParam("X-MBX-APIKEY") final String p7,
-      @QueryParam("signature") final ParamsDigest p8)
-      throws IOException, BinanceException;
+  List<MarginOrder> getAllMarginOrders(
+          @QueryParam("symbol") final String p0,
+          @QueryParam("orderId") final String p1,
+          @QueryParam("startTime") final Long p2,
+          @QueryParam("endTime") final Long p3,
+          @QueryParam("limit") final Integer p4,
+          @QueryParam("recvWindow") final Long p5,
+          @QueryParam("timestamp") final long p6,
+          @HeaderParam("X-MBX-APIKEY") final String p7,
+          @QueryParam("signature") final ParamsDigest p8)
+          throws IOException, BinanceException;
 
   @GET
   @Path("sapi/v1/margin/myTrades")
