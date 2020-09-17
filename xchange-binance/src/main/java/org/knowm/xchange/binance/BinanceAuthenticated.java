@@ -727,19 +727,31 @@ public interface BinanceAuthenticated extends Binance {
   @GET
   @Path("sapi/v1/margin/allPairs")
   List<MarginPair> getAllMarginPairs(
-      @QueryParam("recvWindow") final Long p0,
-      @QueryParam("timestamp") final long p1,
-      @HeaderParam("X-MBX-APIKEY") final String p2,
-      @QueryParam("signature") final ParamsDigest p3)
-      throws IOException, BinanceException;
+          @QueryParam("recvWindow") final Long p0,
+          @QueryParam("timestamp") final long p1,
+          @HeaderParam("X-MBX-APIKEY") final String p2,
+          @QueryParam("signature") final ParamsDigest p3)
+          throws IOException, BinanceException;
 
   @GET
   @Path("sapi/v1/margin/priceIndex")
   MarginPriceIndex getMarginPriceIndex(
-      @QueryParam("symbol") final String p0,
-      @QueryParam("recvWindow") final Long p1,
-      @QueryParam("timestamp") final long p2,
-      @HeaderParam("X-MBX-APIKEY") final String p3,
-      @QueryParam("signature") final ParamsDigest p4)
-      throws IOException, BinanceException;
+          @QueryParam("symbol") final String p0,
+          @QueryParam("recvWindow") final Long p1,
+          @QueryParam("timestamp") final long p2,
+          @HeaderParam("X-MBX-APIKEY") final String p3,
+          @QueryParam("signature") final ParamsDigest p4)
+          throws IOException, BinanceException;
+
+  @POST
+  @Path("sapi/v1/futures/transfer")
+  TransferResult tranfser(
+          @FormParam("asset") String asset,
+          @FormParam("amount") BigDecimal amount,
+          @FormParam("type") Integer type,
+          @FormParam("recvWindow") Long recvWindow,
+          @FormParam("timestamp") long timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
 }

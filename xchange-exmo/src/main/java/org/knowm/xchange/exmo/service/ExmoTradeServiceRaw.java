@@ -1,9 +1,5 @@
 package org.knowm.xchange.exmo.service;
 
-import static org.apache.commons.lang3.StringUtils.join;
-
-import java.math.BigDecimal;
-import java.util.*;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -12,6 +8,11 @@ import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.exmo.dto.trade.ExmoUserTrades;
 import org.knowm.xchange.utils.DateUtils;
+
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.join;
 
 public class ExmoTradeServiceRaw extends BaseExmoService {
   protected ExmoTradeServiceRaw(Exchange exchange) {
@@ -50,7 +51,7 @@ public class ExmoTradeServiceRaw extends BaseExmoService {
         Order.OrderType type = ExmoAdapters.adaptOrderType(order);
         BigDecimal amount = new BigDecimal(order.get("quantity"));
         String id = order.get("order_id");
-        BigDecimal price = new BigDecimal(order.get("price"));
+        BigDecimal price = order.get("price") != null ? new BigDecimal(order.get("price")) : null;
         Date created = DateUtils.fromUnixTime(Long.valueOf(order.get("created")));
 
         openOrders.add(new LimitOrder(type, amount, currencyPair, id, created, price));

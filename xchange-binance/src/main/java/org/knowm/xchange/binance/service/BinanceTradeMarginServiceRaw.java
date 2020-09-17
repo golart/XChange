@@ -296,17 +296,17 @@ public class BinanceTradeMarginServiceRaw extends BinanceBaseService {
             (Long)
                     this.exchange
                             .getExchangeSpecification()
-                .getExchangeSpecificParametersItem("recvWindow");
+                            .getExchangeSpecificParametersItem("recvWindow");
     return this.binance.getAllMarginOrders(
-        BinanceAdapters.toSymbol(symbol),
-        orderId,
-        startTime,
-        endTime,
-        limit,
-        recvWindow,
-        this.getTimestamp(),
-        this.apiKey,
-        this.signatureCreator);
+            BinanceAdapters.toSymbol(symbol),
+            orderId,
+            startTime,
+            endTime,
+            limit,
+            recvWindow,
+            this.getTimestamp(),
+            this.apiKey,
+            this.signatureCreator);
   }
 
   public List<BinanceTrade> getTrades(
