@@ -151,7 +151,7 @@ public interface BinanceFuturesAuthenticated extends BinanceFutures {
   @Path("fapi/v1/allOrders")
   List<BinanceFuturesOrder> getAllOrders(
       @QueryParam("symbol") String symbol,
-      @QueryParam("orderId") long orderId,
+      @QueryParam("orderId") Long orderId,
       @QueryParam("startTime") Long startTime,
       @QueryParam("endTime") Long endTime,
       @QueryParam("limit") Integer limit,

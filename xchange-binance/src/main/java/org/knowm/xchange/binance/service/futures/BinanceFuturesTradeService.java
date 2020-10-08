@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
@@ -137,6 +138,10 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw
   }
 
   private String getClientOrderId(Order order) {
+
+    if (!StringUtils.isEmpty(order.getUserReference())) {
+      return order.getUserReference();
+    }
 
     String clientOrderId = null;
     for (Order.IOrderFlags flags : order.getOrderFlags()) {

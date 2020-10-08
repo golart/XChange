@@ -1,24 +1,23 @@
 package org.knowm.xchange.binance;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.account.*;
 import org.knowm.xchange.binance.dto.account.margin.*;
 import org.knowm.xchange.binance.dto.trade.*;
 import si.mazi.rescu.ParamsDigest;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 public interface BinanceAuthenticated extends Binance {
 
-  public static final String SIGNATURE = "signature";
-  static final String X_MBX_APIKEY = "X-MBX-APIKEY";
+  String SIGNATURE = "signature";
+  String X_MBX_APIKEY = "X-MBX-APIKEY";
 
   @POST
   @Path("api/v3/order")
@@ -650,16 +649,16 @@ public interface BinanceAuthenticated extends Binance {
   @GET
   @Path("sapi/v1/margin/allOrders")
   List<MarginOrder> getAllMarginOrders(
-          @QueryParam("symbol") final String p0,
-          @QueryParam("orderId") final String p1,
-          @QueryParam("startTime") final Long p2,
-          @QueryParam("endTime") final Long p3,
-          @QueryParam("limit") final Integer p4,
-          @QueryParam("recvWindow") final Long p5,
-          @QueryParam("timestamp") final long p6,
-          @HeaderParam("X-MBX-APIKEY") final String p7,
-          @QueryParam("signature") final ParamsDigest p8)
-          throws IOException, BinanceException;
+      @QueryParam("symbol") final String p0,
+      @QueryParam("orderId") final String p1,
+      @QueryParam("startTime") final Long p2,
+      @QueryParam("endTime") final Long p3,
+      @QueryParam("limit") final Integer p4,
+      @QueryParam("recvWindow") final Long p5,
+      @QueryParam("timestamp") final long p6,
+      @HeaderParam("X-MBX-APIKEY") final String p7,
+      @QueryParam("signature") final ParamsDigest p8)
+      throws IOException, BinanceException;
 
   @GET
   @Path("sapi/v1/margin/myTrades")
@@ -727,31 +726,31 @@ public interface BinanceAuthenticated extends Binance {
   @GET
   @Path("sapi/v1/margin/allPairs")
   List<MarginPair> getAllMarginPairs(
-          @QueryParam("recvWindow") final Long p0,
-          @QueryParam("timestamp") final long p1,
-          @HeaderParam("X-MBX-APIKEY") final String p2,
-          @QueryParam("signature") final ParamsDigest p3)
-          throws IOException, BinanceException;
+      @QueryParam("recvWindow") final Long p0,
+      @QueryParam("timestamp") final long p1,
+      @HeaderParam("X-MBX-APIKEY") final String p2,
+      @QueryParam("signature") final ParamsDigest p3)
+      throws IOException, BinanceException;
 
   @GET
   @Path("sapi/v1/margin/priceIndex")
   MarginPriceIndex getMarginPriceIndex(
-          @QueryParam("symbol") final String p0,
-          @QueryParam("recvWindow") final Long p1,
-          @QueryParam("timestamp") final long p2,
-          @HeaderParam("X-MBX-APIKEY") final String p3,
-          @QueryParam("signature") final ParamsDigest p4)
-          throws IOException, BinanceException;
+      @QueryParam("symbol") final String p0,
+      @QueryParam("recvWindow") final Long p1,
+      @QueryParam("timestamp") final long p2,
+      @HeaderParam("X-MBX-APIKEY") final String p3,
+      @QueryParam("signature") final ParamsDigest p4)
+      throws IOException, BinanceException;
 
   @POST
   @Path("sapi/v1/futures/transfer")
   TransferResult tranfser(
-          @FormParam("asset") String asset,
-          @FormParam("amount") BigDecimal amount,
-          @FormParam("type") Integer type,
-          @FormParam("recvWindow") Long recvWindow,
-          @FormParam("timestamp") long timestamp,
-          @HeaderParam(X_MBX_APIKEY) String apiKey,
-          @QueryParam(SIGNATURE) ParamsDigest signature)
-          throws IOException, BinanceException;
+      @FormParam("asset") String asset,
+      @FormParam("amount") BigDecimal amount,
+      @FormParam("type") Integer type,
+      @FormParam("recvWindow") Long recvWindow,
+      @FormParam("timestamp") long timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
 }

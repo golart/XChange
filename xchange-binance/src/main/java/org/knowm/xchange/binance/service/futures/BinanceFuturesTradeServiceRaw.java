@@ -226,13 +226,7 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
   }
 
   public List<BinanceFuturesOrder> allOrders(
-      CurrencyPair pair,
-      Long orderId,
-      Long startTime,
-      Long endTime,
-      Integer limit,
-      Long recvWindow,
-      long timestamp)
+      CurrencyPair pair, Long orderId, Long startTime, Long endTime, Integer limit, Long recvWindow)
       throws BinanceException, IOException {
     return binanceFutures.getAllOrders(
         BinanceAdapters.toSymbol(pair),
@@ -241,7 +235,7 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
         endTime,
         limit,
         recvWindow,
-        timestamp,
+        this.getTimestamp(),
         super.apiKey,
         super.signatureCreator);
   }

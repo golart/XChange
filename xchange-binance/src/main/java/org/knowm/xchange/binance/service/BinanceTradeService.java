@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.Value;
+import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
@@ -168,6 +169,10 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
   }
 
   private String getClientOrderId(Order order) {
+
+    if (!StringUtils.isEmpty(order.getUserReference())) {
+      return order.getUserReference();
+    }
 
     String clientOrderId = null;
     for (IOrderFlags flags : order.getOrderFlags()) {

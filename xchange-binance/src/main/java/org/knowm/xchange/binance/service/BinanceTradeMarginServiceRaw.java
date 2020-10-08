@@ -4,6 +4,9 @@
 
 package org.knowm.xchange.binance.service;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.BinanceException;
@@ -11,10 +14,6 @@ import org.knowm.xchange.binance.dto.account.margin.*;
 import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
 
 public class BinanceTradeMarginServiceRaw extends BinanceBaseService {
   protected BinanceTradeMarginServiceRaw(final Exchange exchange) {
@@ -286,27 +285,27 @@ public class BinanceTradeMarginServiceRaw extends BinanceBaseService {
   }
 
   public List<MarginOrder> getAllMarginOrders(
-          final CurrencyPair symbol,
-          final String orderId,
-          final Long startTime,
-          final Long endTime,
-          final Integer limit)
-          throws IOException, BinanceException {
+      final CurrencyPair symbol,
+      final String orderId,
+      final Long startTime,
+      final Long endTime,
+      final Integer limit)
+      throws IOException, BinanceException {
     final Long recvWindow =
-            (Long)
-                    this.exchange
-                            .getExchangeSpecification()
-                            .getExchangeSpecificParametersItem("recvWindow");
+        (Long)
+            this.exchange
+                .getExchangeSpecification()
+                .getExchangeSpecificParametersItem("recvWindow");
     return this.binance.getAllMarginOrders(
-            BinanceAdapters.toSymbol(symbol),
-            orderId,
-            startTime,
-            endTime,
-            limit,
-            recvWindow,
-            this.getTimestamp(),
-            this.apiKey,
-            this.signatureCreator);
+        BinanceAdapters.toSymbol(symbol),
+        orderId,
+        startTime,
+        endTime,
+        limit,
+        recvWindow,
+        this.getTimestamp(),
+        this.apiKey,
+        this.signatureCreator);
   }
 
   public List<BinanceTrade> getTrades(

@@ -1,16 +1,15 @@
 package org.knowm.xchange.binance.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.account.*;
 import org.knowm.xchange.binance.dto.account.DepositList.BinanceDeposit;
 import org.knowm.xchange.currency.Currency;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
 
 public class BinanceAccountServiceRaw extends BinanceBaseService {
 
@@ -134,27 +133,27 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
   public List<AssetDividendResponse.AssetDividend> getAssetDividend(
       String asset, Long startTime, Long endTime) throws BinanceException, IOException {
     return binance
-            .getAssetDividend(
-                    asset,
-                    startTime,
-                    endTime,
-                    getRecvWindow(),
-                    getTimestamp(),
-                    super.apiKey,
-                    super.signatureCreator)
-            .getData();
-  }
-
-  public TransferResult transfer(String asset, BigDecimal amount, SpotTransferType type)
-          throws BinanceException, IOException {
-    return binance.tranfser(
+        .getAssetDividend(
             asset,
-            amount,
-            type.getCode(),
+            startTime,
+            endTime,
             getRecvWindow(),
             getTimestamp(),
             super.apiKey,
-            super.signatureCreator);
+            super.signatureCreator)
+        .getData();
+  }
+
+  public TransferResult transfer(String asset, BigDecimal amount, SpotTransferType type)
+      throws BinanceException, IOException {
+    return binance.tranfser(
+        asset,
+        amount,
+        type.getCode(),
+        getRecvWindow(),
+        getTimestamp(),
+        super.apiKey,
+        super.signatureCreator);
   }
 
   private <T> T checkWapiResponse(WapiResponse<T> result) {
