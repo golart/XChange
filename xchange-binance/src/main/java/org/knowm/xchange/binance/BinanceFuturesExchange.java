@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.dto.account.AssetDetail;
@@ -113,7 +114,10 @@ public class BinanceFuturesExchange extends BaseExchange {
               maxQty = new BigDecimal(filter.getMaxQty()).stripTrailingZeros();
               stepSize = new BigDecimal(filter.getStepSize()).stripTrailingZeros();
             } else if (filter.getFilterType().equals("MIN_NOTIONAL")) {
-              counterMinQty = new BigDecimal(filter.getMinNotional()).stripTrailingZeros();
+              counterMinQty =
+                  StringUtils.isEmpty(filter.getMinNotional())
+                      ? BigDecimal.ZERO
+                      : new BigDecimal(filter.getMinNotional()).stripTrailingZeros();
             }
           }
 
